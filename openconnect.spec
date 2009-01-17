@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	0.99
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -43,6 +43,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 17 2009 Tomas Mraz <tmraz@redhat.com> - 0.99-2
+- rebuild with new openssl
+
 * Tue Dec 16 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.99-1
 - Update to 0.99.
 - Fix BuildRequires
