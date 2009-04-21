@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	1.10
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -11,6 +11,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
 Requires:	vpnc
+Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf
 Conflicts:	NetworkManager-openconnect < 0.7.0.99-2
@@ -46,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Apr 21 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.10-2
+- Require openssl0.9.8k-4, which has all required DTLS patches.
+
 * Wed Apr  1 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.10-1
 - Update to 1.10.
 
