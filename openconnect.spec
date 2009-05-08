@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	1.10
-Release:	2%{?dist}
+Version:	1.20
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May  8 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.20-1
+- Update to 1.20.
+
 * Tue Apr 21 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.10-2
 - Require openssl0.9.8k-4, which has all required DTLS patches.
 
