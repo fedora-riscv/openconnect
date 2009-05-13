@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	1.20
+Version:	1.30
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -14,7 +14,7 @@ Requires:	vpnc
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf
-Conflicts:	NetworkManager-openconnect < 0.7.0.99-2
+Conflicts:	NetworkManager-openconnect < 0.7.0.99-3
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
@@ -42,11 +42,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_bindir}/openconnect
 %{_libexecdir}/nm-openconnect-auth-dialog
 %{_mandir}/man8/*
-%doc TODO COPYING.LGPL
+%doc TODO COPYING.LGPL openconnect.html
 
 
 
 %changelog
+* Fri May  8 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.20-2
+- Update to 1.30.
+
 * Fri May  8 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.20-1
 - Update to 1.20.
 
