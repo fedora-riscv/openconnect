@@ -47,7 +47,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri May  8 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.20-2
+* Wed May 13 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.30-1
 - Update to 1.30.
 
 * Fri May  8 2009 David Woodhouse <David.Woodhouse@intel.com> - 1.20-1
