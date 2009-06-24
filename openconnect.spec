@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	2.00
+Version:	2.01
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jun 24 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.01-1
+- Update to 2.01.
+
 * Wed Jun  3 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.00-1
 - Update to 2.00.
 
