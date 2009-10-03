@@ -1,0 +1,24 @@
+commit 2d96b7bf2d927127ed0f56838b070e8e7693258d
+Author: David Woodhouse <David.Woodhouse@intel.com>
+Date:   Sat Oct 3 09:50:24 2009 +0100
+
+    Recognise private keys generated with OpenSSL 1.0.0 (Fedora 12)
+    
+    These say '-----BEGIN ENCRYPTED PRIVATE KEY-----'.
+    
+    Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+
+diff --git a/ssl.c b/ssl.c
+index 5c2baef..2e67634 100644
+--- a/ssl.c
++++ b/ssl.c
+@@ -297,7 +297,8 @@ static int load_certificate(struct openconnect_info *vpninfo)
+ 				vpninfo->cert_type = CERT_TYPE_TPM;
+ 				break;
+ 			} else if (!strcmp(buf, "-----BEGIN RSA PRIVATE KEY-----\n") ||
+-				   !strcmp(buf, "-----BEGIN DSA PRIVATE KEY-----\n")) {
++				   !strcmp(buf, "-----BEGIN DSA PRIVATE KEY-----\n") ||
++				   !strcmp(buf, "-----BEGIN ENCRYPTED PRIVATE KEY-----\n")) {
+ 				vpninfo->cert_type = CERT_TYPE_PEM;
+ 				break;
+ 			}
