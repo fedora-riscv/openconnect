@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	2.01
-Release:	3%{?dist}
+Version:	2.10
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -10,7 +10,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-Requires:	vpnc
+Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf. As will the 'gwcert' secret.
@@ -47,6 +47,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Nov  4 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.10-1
+- Update to 2.10.
+
 * Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 2.01-3
 - rebuilt with new openssl
 
