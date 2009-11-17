@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	2.01
-Release:	4%{?dist}
+Version:	2.11
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -15,8 +15,6 @@ Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf. As will the 'gwcert' secret.
 Conflicts:	NetworkManager-openconnect < 0.7.0.99-4
-Patch0:		openconnect-2.01-newcerts.patch
-Patch1:		openconnect-2.01-disconn.patch
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
@@ -24,8 +22,6 @@ HTTPS and DTLS protocols.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
 
 %build
 make %{?_smp_mflags}
@@ -51,6 +47,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Nov 17 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.11-1
+- Update to 2.11.
+
+* Wed Nov  4 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.10-1
+- Update to 2.10.
+
 * Sat Oct 03 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.01-4
 - Fix disconnect packet, work with new certificates from OpenSSL 1.0.0
 
