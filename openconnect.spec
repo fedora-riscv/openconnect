@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	2.12
+Version:	2.20
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -10,6 +10,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
+BuildRequires:	libproxy-devel
 Requires:	vpnc
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
@@ -47,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Jan  4 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.20-1
+- Update to 2.20.
+
 * Mon Dec  7 2009 David Woodhouse <David.Woodhouse@intel.com> - 2.12-1
 - Update to 2.12.
 
