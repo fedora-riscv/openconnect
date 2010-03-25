@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	2.21
+Version:	2.22
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Mar  7 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.22-1
+- Update to 2.22. (Works around server bug in ASA version 8.2.2.5)
+
 * Sun Jan 10 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.21-1
 - Update to 2.21.
 
