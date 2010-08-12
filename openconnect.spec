@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	2.25
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 12 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.25-2
+- Rebuild for new libproxy
+
 * Sat May 15 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.25-1
 - Update to 2.25.
 
