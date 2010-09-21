@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	2.25
+Version:	2.26
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Sep 22 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.26-1
+- Update to 2.26. (#629797: SIGSEGV in nm-openconnect-auth-dialog)
+
 * Sun Aug  1 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.25-1
 - Update to 2.25. (#620219: Check server cert against hostname)
 
