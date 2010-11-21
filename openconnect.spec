@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	2.26
-Release:	3%{?dist}
+Release:	4%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Nov 21 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.26-4
+- Fix bug numbers in changelog
+
 * Wed Sep 29 2010 jkeating - 2.26-3
 - Rebuilt for gcc bug 634757
 
