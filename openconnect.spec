@@ -52,7 +52,7 @@ rm -rf $RPM_BUILD_ROOT
 - Rebuilt for gcc bug 634757
 
 * Wed Sep 22 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.26-1
-- Update to 2.26. (#629797: SIGSEGV in nm-openconnect-auth-dialog)
+- Update to 2.26. (#629979: SIGSEGV in nm-openconnect-auth-dialog)
 
 * Thu Aug 12 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.25-2
 - Rebuild for new libproxy
