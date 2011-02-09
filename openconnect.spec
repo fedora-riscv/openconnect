@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	2.26
-Release:	4%{?dist}
+Release:	5%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -48,6 +48,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.26-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Sun Nov 21 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.26-4
 - Fix bug numbers in changelog
 
