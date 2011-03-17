@@ -1,6 +1,6 @@
 Name:		openconnect
 Version:	3.01
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -22,6 +22,7 @@ This package provides a client for Cisco's "AnyConnect" VPN, which uses
 HTTPS and DTLS protocols.
 
 %package devel
+Provides: openconnect-devel-static = %{version}-%{release}
 Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
 
@@ -61,6 +62,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Mar 17 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.01-2
+- Provide openconnect-devel-static (#688349)
+
 * Wed Mar  9 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.01-1
 - Update to 3.01.
 
