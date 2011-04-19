@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	2.26
-Release:	2%{?dist}
+Version:	3.02
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -15,22 +15,33 @@ Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf. As will the 'gwcert' secret.
-Conflicts:	NetworkManager-openconnect < 0.7.0.99-4
+Conflicts:	NetworkManager-openconnect < 0.8.4
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
 HTTPS and DTLS protocols.
 
+%package devel
+Provides: openconnect-devel-static = %{version}-%{release}
+Summary: Development package for OpenConnect VPN authentication tools
+Group: Applications/Internet
+
+%description devel
+This package provides the core HTTP and authentication support from
+the OpenConnect VPN client, to be used by GUI authentication dialogs
+for NetworkManager etc.
+
 %prep
 %setup -q
 
 %build
-make %{?_smp_mflags}
+make %{?_smp_mflags} openconnect
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 make install DESTDIR=$RPM_BUILD_ROOT
+make install-lib LIBDIR=%{_libdir} DESTDIR=$RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man8
 install -m0644 openconnect.8 $RPM_BUILD_ROOT/%{_mandir}/man8
 
@@ -41,13 +52,19 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %{_bindir}/openconnect
-%{_libexecdir}/nm-openconnect-auth-dialog
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL openconnect.html
 
-
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/libopenconnect.a
+/usr/include/openconnect.h
+%{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Apr 19 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.02-1
+- Update to 3.02.
+
 * Sun Nov 21 2010 David Woodhouse <David.Woodhouse@intel.com> - 2.26-2
 - Fix bug numbers in changelog
 
