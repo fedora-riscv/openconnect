@@ -15,7 +15,7 @@ Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
 # NetworkManager-openconnect to barf. As will the 'gwcert' secret.
-Conflicts:	NetworkManager-openconnect < 0.7.0.99-4
+Conflicts:	NetworkManager-openconnect < 0.8.4
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
