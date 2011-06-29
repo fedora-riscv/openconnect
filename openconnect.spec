@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	3.02
-Release:	2%{?dist}
+Version:	3.10
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -22,7 +22,6 @@ This package provides a client for Cisco's "AnyConnect" VPN, which uses
 HTTPS and DTLS protocols.
 
 %package devel
-Provides: openconnect-devel-static = %{version}-%{release}
 Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
 
@@ -35,15 +34,14 @@ for NetworkManager etc.
 %setup -q
 
 %build
-make %{?_smp_mflags} openconnect
+%configure
+make %{?_smp_mflags}
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-make install-lib LIBDIR=%{_libdir} DESTDIR=$RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_mandir}/man8
-install -m0644 openconnect.8 $RPM_BUILD_ROOT/%{_mandir}/man8
+%makeinstall
+rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -51,17 +49,21 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
+%{_libdir}/libopenconnect.so.1*
 %{_bindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL openconnect.html
 
 %files devel
 %defattr(-,root,root,-)
-%{_libdir}/libopenconnect.a
+%{_libdir}/libopenconnect.so
 /usr/include/openconnect.h
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 30 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.10-1
+- Update to 3.10. (Drop static library, ship libopenconnect.so.1)
+
 * Tue Apr 19 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.02-2
 - Fix manpage (new tarball)
 
