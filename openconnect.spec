@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	3.11
+Version:	3.12
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Sep 12 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.12-1
+* Update to 3.12. (Fix DTLS compatibility issue with new ASA firmware)
+
 * Wed Jul 20 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.11-1
 - Update to 3.11. (Fix compatibility issue with servers requiring TLS)
 
