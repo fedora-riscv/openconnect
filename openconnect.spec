@@ -10,7 +10,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	libproxy-devel
+BuildRequires:	libproxy-devel python intltool
 Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
 # The "lasthost" and "autoconnect" gconf keys will cause older versions of
