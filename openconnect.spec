@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	3.12
+Version:	3.13
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -41,7 +41,11 @@ make %{?_smp_mflags}
 %install
 rm -rf $RPM_BUILD_ROOT
 %makeinstall
+# Move HTML docs into correct place
+mkdir -p $RPM_BUILD_ROOT%{_docdir}
+mv $RPM_BUILD_ROOT%{_datadir}/%{name} $RPM_BUILD_ROOT%{_docdir}/%{name}-%{version}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
+%find_lang %{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -50,12 +54,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %postun -p /sbin/ldconfig
 
-%files
+%files -f %{name}.lang
 %defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so.1*
 %{_bindir}/openconnect
 %{_mandir}/man8/*
-%doc TODO COPYING.LGPL openconnect.html
+%doc TODO COPYING.LGPL
 
 %files devel
 %defattr(-,root,root,-)
@@ -64,6 +68,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Sep 30 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.13-1
+- Update to 3.13. (Add localisation support, --cert-expire-warning)
+
 * Mon Sep 12 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.12-1
 * Update to 3.12. (Fix DTLS compatibility issue with new ASA firmware)
 
