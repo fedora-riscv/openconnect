@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	3.13
+Version:	3.14
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -10,12 +10,11 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	libproxy-devel python intltool
+BuildRequires:	libproxy-devel python
 Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
-# The "lasthost" and "autoconnect" gconf keys will cause older versions of
-# NetworkManager-openconnect to barf. As will the 'gwcert' secret.
-Conflicts:	NetworkManager-openconnect < 0.7.0.99-4
+# Older versions of NetworkManager-openconnect won't find openconnect in /usr/sbin
+Conflicts:	NetworkManager-openconnect < 0.9.0-3
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
@@ -34,7 +33,7 @@ for NetworkManager etc.
 %setup -q
 
 %build
-%configure
+%configure --disable-static
 make %{?_smp_mflags}
 
 
@@ -57,7 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so.1*
-%{_bindir}/openconnect
+%{_sbindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
 
