@@ -10,7 +10,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	libproxy-devel python
+BuildRequires:	libproxy-devel python gettext
 Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
 # Older versions of NetworkManager-openconnect won't find openconnect in /usr/sbin
@@ -67,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Sep 30 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.14-1
+- Update to 3.14.
+
 * Fri Sep 30 2011 David Woodhouse <David.Woodhouse@intel.com> - 3.13-1
 - Update to 3.13. (Add localisation support, --cert-expire-warning)
 
