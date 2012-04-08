@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	3.15
-Release:	2%{?dist}
+Version:	3.16
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -67,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sun Apr 08 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.16-1
+- Update to 3.16.
+
 * Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.15-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
