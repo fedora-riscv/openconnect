@@ -33,13 +33,13 @@ for NetworkManager etc.
 %setup -q
 
 %build
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir='${datadir}/doc/%{name}-%{version}/'
+%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags}
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall
+%make_install
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
 
