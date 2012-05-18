@@ -1,5 +1,5 @@
 Name:		openconnect
-Version:	3.19
+Version:	3.20
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -64,6 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri May 18 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.20-1
+- Update to 3.20.
+
 * Thu May 17 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.19-1
 - Update to 3.19.
 
