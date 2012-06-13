@@ -1,6 +1,6 @@
 Name:		openconnect
-Version:	3.20
-Release:	2%{?dist}
+Version:	3.99
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -12,6 +12,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
 BuildRequires:	libproxy-devel python gettext
 Requires:	vpnc-script
+Requires:	pkgconfig(gnutls) >= 2.12.16		
 Requires:	openssl >= 0.9.8k-4
 # Older versions of NetworkManager-openconnect won't find openconnect in /usr/sbin
 Conflicts:	NetworkManager-openconnect < 0.9.0-3
@@ -34,7 +35,7 @@ for NetworkManager etc.
 %setup -q
 
 %build
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version}
+%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --with-gnutls
 make %{?_smp_mflags}
 
 
@@ -53,7 +54,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%{_libdir}/libopenconnect.so.1*
+%{_libdir}/libopenconnect.so.2*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
@@ -65,6 +66,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 14 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-1
+- Update to OpenConnect v3.99, use GnuTLS (enables PKCS#11 support)
+
 * Sat May 19 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.20-2
 - openconnect-devel package should require precisely matching openconnect
 
