@@ -1,12 +1,13 @@
 Name:		openconnect
 Version:	3.99
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
+Patch1:		0001-Fix-GnuTLS-2.12-library-still-referencing-OpenSSL-ER.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
@@ -32,6 +33,7 @@ for NetworkManager etc.
 
 %prep
 %setup -q
+%patch1 -p1
 
 %build
 %configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --with-gnutls
@@ -65,6 +67,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 14 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-3
+- Fix library not to reference OpenSSL symbols when linked against GnuTLS 2
+
 * Thu Jun 14 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-2
 - Fix GnuTLS BuildRequires
 
