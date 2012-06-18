@@ -8,14 +8,14 @@
 
 Name:		openconnect
 Version:	3.99
-Release:	5%{?dist}
+Release:	6%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 # git reset --hard b40dcae ; make tmp-dist
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}-26-gb40dcae.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}-33-g2d08bf0.tar.gz
 Source1:	library15.c
 Source2:	libopenconnect15.map
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -54,7 +54,7 @@ NetworkManager clients which have not yet been rebuilt to use the new version
 of the library.
 
 %prep
-%setup -q -n openconnect-3.99-26-gb40dcae
+%setup -q -n openconnect-3.99-33-g2d08bf0
 %if %{build_compat_lib}
 cp %{SOURCE1} .
 cp %{SOURCE2} libopenconnect15.map.in
@@ -129,6 +129,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Jun 18 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-6
+- Fix crash on cleanup when no client certificate is set (#833141)
+
 * Sat Jun 16 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-5
 - Enable building compatibility libopenconnect.so.1
 
