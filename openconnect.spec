@@ -14,15 +14,15 @@
 %endif
 
 Name:		openconnect
-Version:	3.99
-Release:	8%{?dist}
+Version:	4.00
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 # git reset --hard b40dcae ; make tmp-dist
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}-36-gb0f2edb.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 Source1:	library15.c
 Source2:	libopenconnect15.map
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -68,7 +68,7 @@ NetworkManager clients which have not yet been rebuilt to use the new version
 of the library.
 
 %prep
-%setup -q -n openconnect-3.99-36-gb0f2edb
+%setup -q
 %if %{build_compat_lib}
 cp %{SOURCE1} .
 cp %{SOURCE2} libopenconnect15.map.in
@@ -144,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jun 20 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-1
+- Update to 4.00 release
+
 * Wed Jun 20 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-8
 - Add support for building on RHEL[56]
 
