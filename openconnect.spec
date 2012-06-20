@@ -1,14 +1,21 @@
 # For Fedora 17 and below, for now, build a compat libopenconnect.so.1 with OpenSSL so
 # that the upgrade path is easier.
-%if 0%fedora < 18
-%define build_compat_lib 1
+%define build_compat_lib 0%{?fedora} && 0%{?fedora} < 18
+
+# RHEL6 still has GnuTLS which is even more ancient than Fedora's!
+%define use_gnutls 0%{?fedora}
+
+# RHEL5 has no libproxy, and no %make_install macro
+%if 0%{?rhel} && 0%{?rhel} <= 5
+%define use_libproxy 0
+%define make_install %{__make} install DESTDIR=%{?buildroot}
 %else
-%define build_compat_lib 0
+%define use_libproxy 1
 %endif
 
 Name:		openconnect
 Version:	3.99
-Release:	7%{?dist}
+Release:	8%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -21,11 +28,18 @@ Source2:	libopenconnect15.map
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	libproxy-devel python gettext gnutls-devel >= 2.12.14-3
-BuildRequires:	autoconf automake libtool trousers-devel
+BuildRequires:	autoconf automake libtool trousers-devel python gettext
 Requires:	vpnc-script
 Requires:	openssl >= 0.9.8k-4
+%if %use_gnutls
+# We need the fix for https://bugzilla.redhat.com/show_bug.cgi?id=826293
+BuildRequires:	gnutls-devel >= 2.12.14-3
 Requires:	gnutls >= 2.12.14-3
+%endif
+%if %{use_libproxy}
+BuildRequires:	libproxy-devel
+%endif
+
 # Older versions of NetworkManager-openconnect won't find openconnect in /usr/sbin
 Conflicts:	NetworkManager-openconnect < 0.9.0-3
 
@@ -64,10 +78,10 @@ touch version.c
 %endif
 
 %build
-%global _configure ../configure
 %if %{build_compat_lib}
 mkdir compat
 cd compat
+%global _configure ../configure
 %configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version}
 # Hack: Build with library15.c instead of library.c and use the old version
 # script and soname.
@@ -80,14 +94,17 @@ sed -e 's/library\./library15./g' \
 
 # Do not let it rebuild the symbol map that we provided
 cp %{SOURCE2} .
-make -f Makefile.lib15 libopenconnect.la
-
+make -f Makefile.lib15 libopenconnect.la V=1
 cd ..
+%global _configure ./configure
+%endif # {build_compat_lib}
+
+%configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
+%if %{use_gnutls}
+		--with-gnutls \
 %endif
-mkdir gnutls
-cd gnutls
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --with-gnutls
-make %{?_smp_mflags}
+		--htmldir=%{_docdir}/%{name}-%{version}
+make %{?_smp_mflags} V=1
 
 
 %install
@@ -97,10 +114,8 @@ mkdir -p $RPM_BUILD_ROOT/%{_libdir}
 install -m0755 compat/.libs/libopenconnect.so.1.5.0 ${RPM_BUILD_ROOT}/%{_libdir}
 ln -sf libopenconnect.so.1.5.0 ${RPM_BUILD_ROOT}/%{_libdir}/libopenconnect.so.1
 %endif
-cd gnutls
 %make_install
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
-cd ..
 %find_lang %{name}
 
 %clean
@@ -129,6 +144,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jun 20 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-8
+- Add support for building on RHEL[56]
+
 * Wed Jun 20 2012 David Woodhouse <David.Woodhouse@intel.com> - 3.99-7
 - Add OpenSSL encrypted PEM file support for GnuTLS
 
