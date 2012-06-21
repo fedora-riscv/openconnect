@@ -11,19 +11,6 @@ Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
 
 diff --git a/configure.ac b/configure.ac
 index 8216fe0..2ff8a54 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -359,7 +359,7 @@ AM_CONDITIONAL(HAVE_SYMBOL_VERSIONING, [test "${symvers}" != "no"])
- 
- PKG_CHECK_MODULES(LIBXML2, libxml-2.0)
- 
--PKG_CHECK_MODULES(ZLIB, zlib, [],
-+PKG_CHECK_MODULES(ZLIB, zlib, [AC_SUBST(ZLIB_PC, [zlib])],
- 		  [oldLIBS="$LIBS"
- 		  LIBS="$LIBS -lz" 
- 		  AC_MSG_CHECKING([for zlib without pkg-config])
-diff --git a/openconnect.pc.in b/openconnect.pc.in
-index 23b818f..012431f 100644
 --- a/openconnect.pc.in
 +++ b/openconnect.pc.in
 @@ -7,7 +7,7 @@ includedir=@includedir@
