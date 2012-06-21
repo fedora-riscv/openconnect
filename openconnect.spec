@@ -15,13 +15,12 @@
 
 Name:		openconnect
 Version:	4.00
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-# git reset --hard b40dcae ; make tmp-dist
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 Source1:	library15.c
 Source2:	libopenconnect15.map
@@ -29,10 +28,16 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
 BuildRequires:	autoconf automake libtool trousers-devel python gettext
+%if 0%{?fedora}
 Requires:	vpnc-script
-Requires:	openssl >= 0.9.8k-4
+# Older versions in F16 won't find openconnect in /usr/sbin:
+Conflicts:	NetworkManager-openconnect < 0.9.0-3
+%else
+Requires:	vpnc
+%endif
+
 %if %use_gnutls
-# We need the fix for https://bugzilla.redhat.com/show_bug.cgi?id=826293
+# For F16, we need the fix for https://bugzilla.redhat.com/show_bug.cgi?id=826293
 BuildRequires:	gnutls-devel >= 2.12.14-3
 Requires:	gnutls >= 2.12.14-3
 %endif
@@ -40,8 +45,6 @@ Requires:	gnutls >= 2.12.14-3
 BuildRequires:	libproxy-devel
 %endif
 
-# Older versions of NetworkManager-openconnect won't find openconnect in /usr/sbin
-Conflicts:	NetworkManager-openconnect < 0.9.0-3
 
 %description
 This package provides a client for Cisco's "AnyConnect" VPN, which uses
@@ -144,6 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-2
+- Fix dependencies for RHEL[56]
+
 * Wed Jun 20 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-1
 - Update to 4.00 release
 
