@@ -14,8 +14,8 @@
 %endif
 
 Name:		openconnect
-Version:	4.00
-Release:	2%{?dist}
+Version:	4.01
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -147,6 +147,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
+- Update to 4.01 release
+
 * Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-2
 - Fix dependencies for RHEL[56]
 
