@@ -54,6 +54,8 @@ HTTPS and DTLS protocols.
 Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
 Requires: %{name} = %{version}-%{release}
+# RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
+Requires: openssl-devel zlib-devel
 
 %description devel
 This package provides the core HTTP and authentication support from
@@ -155,6 +157,9 @@ rm -rf $RPM_BUILD_ROOT
 
 * Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
 - Update to 4.01 release
+
+* Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-3
+- Remove zlib from openconnect.pc dependencies
 
 * Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-2
 - Fix dependencies for RHEL[56]
