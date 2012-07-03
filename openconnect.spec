@@ -3,7 +3,7 @@
 %define build_compat_lib 0%{?fedora} && 0%{?fedora} < 18
 
 # RHEL6 still has GnuTLS which is even more ancient than Fedora's!
-%define use_gnutls 0%{?fedora}
+%define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
 # RHEL5 has no libproxy, and no %make_install macro
 %if 0%{?rhel} && 0%{?rhel} <= 5
