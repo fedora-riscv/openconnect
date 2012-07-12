@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	4.04
+Version:	4.05
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -149,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jul 12 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.05-1
+- Update to 4.05 release (PKCS#11 fixes)
+
 * Thu Jul 05 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.04-1
 - Update to 4.04 release (Fix PKCS#8 password handling)
 
