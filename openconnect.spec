@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	4.06
+Version:	4.07
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -149,6 +149,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-1
+- Update to 4.07 release (Fix #845636 CSTP write stall handling)
+
 * Mon Jul 23 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.06-1
 - Update to 4.06 release
 
