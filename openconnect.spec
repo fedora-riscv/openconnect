@@ -15,7 +15,7 @@
 
 Name:		openconnect
 Version:	4.07
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -29,6 +29,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
 BuildRequires:	autoconf automake libtool trousers-devel python gettext
 %if 0%{?fedora}
+%if !(%{build_compat_lib})
+Obsoletes:	openconnect-lib-compat < %{version}-%{release}
+%endif
 Requires:	vpnc-script
 # Older versions in F16 won't find openconnect in /usr/sbin:
 Conflicts:	NetworkManager-openconnect < 0.9.0-3
@@ -149,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-2
+- Obsolete openconnect-lib-compat (#842840)
+
 * Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-1
 - Update to 4.07 release (Fix #845636 CSTP write stall handling)
 
