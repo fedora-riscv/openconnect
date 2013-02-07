@@ -14,8 +14,8 @@
 %endif
 
 Name:		openconnect
-Version:	4.07
-Release:	2%{?dist}
+Version:	4.99
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -58,7 +58,9 @@ Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
 Requires: %{name} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
+%if 0%{?rhel} && 0%{?rhel} <= 5
 Requires: openssl-devel zlib-devel
+%endif
 
 %description devel
 This package provides the core HTTP and authentication support from
@@ -152,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Feb 08 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.99-1
+- Update to 4.99 release
+
 * Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-2
 - Obsolete openconnect-lib-compat (#842840)
 
