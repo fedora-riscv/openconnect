@@ -14,8 +14,8 @@
 %endif
 
 Name:		openconnect
-Version:	4.07
-Release:	2%{?dist}
+Version:	4.08
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -152,6 +152,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Feb 13 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.08-1
+- Update to 4.08 release (#910331 CVE-2012-6128)
+
 * Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-2
 - Obsolete openconnect-lib-compat (#842840)
 
