@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	4.99
+Version:	5.00
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -110,8 +110,8 @@ cd ..
 %endif # {build_compat_lib}
 
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-%if %{use_gnutls}
-		--with-gnutls \
+%if !%{use_gnutls}
+		--with-openssl \
 %endif
 		--htmldir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags} V=1
@@ -154,7 +154,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Thu Feb 08 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.99-1
+* Wed May 15 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.00-1
+- Update to 5.00 release
+
+* Thu Feb 07 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.99-1
 - Update to 4.99 release
 
 * Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-2
@@ -178,10 +181,10 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Jul 02 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.03-1
 - Update to 4.03 release (#836558)
 
-* Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.02-1
+* Thu Jun 28 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.02-1
 - Update to 4.02 release
 
-* Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
+* Thu Jun 28 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
 - Update to 4.01 release
 
 * Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-3
@@ -368,7 +371,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Oct 09 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-3
 - Include COPYING.LGPL file
 
-* Mon Oct 07 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-2
+* Tue Oct 07 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-2
 - Fix auth-dialog crash
 
 * Mon Oct 06 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-1
