@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	5.00
+Version:	5.01
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -92,12 +92,12 @@ touch version.c
 mkdir compat
 cd compat
 %global _configure ../configure
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version}
+%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --without-gnutls --without-openssl-version-check
 # Hack: Build with library15.c instead of library.c and use the old version
 # script and soname.
 sed -e 's/library\./library15./g' \
     -e 's/libopenconnect.map/libopenconnect15.map/g' \
-    -e 's/-version-number 2:0/-version-number 1:5/g' \
+    -e 's/\$(LT_VER_ARG) 2:./-version-number 1:5/g' \
     Makefile > Makefile.lib15
 # We configure with --disable-dependency-tracking so we do not need this:
 # cp .deps/libopenconnect_la-library.Plo .deps/libopenconnect_la-library2.Plo
@@ -111,7 +111,7 @@ cd ..
 
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
 %if !%{use_gnutls}
-		--with-openssl \
+		--with-openssl --without-openssl-version-check \
 %endif
 		--htmldir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags} V=1
@@ -154,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Jun 01 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-1
+- Update to 5.01 release (#955710, #964329, #964650)
+
 * Wed May 15 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.00-1
 - Update to 5.00 release
 
