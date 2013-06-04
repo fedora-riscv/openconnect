@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	4.08
+Version:	5.01
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -58,7 +58,9 @@ Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
 Requires: %{name} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
+%if 0%{?rhel} && 0%{?rhel} <= 5
 Requires: openssl-devel zlib-devel
+%endif
 
 %description devel
 This package provides the core HTTP and authentication support from
@@ -90,12 +92,12 @@ touch version.c
 mkdir compat
 cd compat
 %global _configure ../configure
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version}
+%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --without-gnutls --without-openssl-version-check
 # Hack: Build with library15.c instead of library.c and use the old version
 # script and soname.
 sed -e 's/library\./library15./g' \
     -e 's/libopenconnect.map/libopenconnect15.map/g' \
-    -e 's/-version-number 2:0/-version-number 1:5/g' \
+    -e 's/\$(LT_VER_ARG) 2:./-version-number 1:5/g' \
     Makefile > Makefile.lib15
 # We configure with --disable-dependency-tracking so we do not need this:
 # cp .deps/libopenconnect_la-library.Plo .deps/libopenconnect_la-library2.Plo
@@ -108,8 +110,8 @@ cd ..
 %endif # {build_compat_lib}
 
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-%if %{use_gnutls}
-		--with-gnutls \
+%if !%{use_gnutls}
+		--with-openssl --without-openssl-version-check \
 %endif
 		--htmldir=%{_docdir}/%{name}-%{version}
 make %{?_smp_mflags} V=1
@@ -152,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Jun 01 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-1
+- Update to 5.01 release (#955710, #964329, #964650)
+
 * Wed Feb 13 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.08-1
 - Update to 4.08 release (#910331 CVE-2012-6128)
 
@@ -176,10 +181,10 @@ rm -rf $RPM_BUILD_ROOT
 * Mon Jul 02 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.03-1
 - Update to 4.03 release (#836558)
 
-* Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.02-1
+* Thu Jun 28 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.02-1
 - Update to 4.02 release
 
-* Thu Jun 27 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
+* Thu Jun 28 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.01-1
 - Update to 4.01 release
 
 * Thu Jun 21 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.00-3
@@ -366,7 +371,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Oct 09 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-3
 - Include COPYING.LGPL file
 
-* Mon Oct 07 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-2
+* Tue Oct 07 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-2
 - Fix auth-dialog crash
 
 * Mon Oct 06 2008 David Woodhouse <David.Woodhouse@intel.com> - 0.94-1
