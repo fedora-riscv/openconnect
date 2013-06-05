@@ -9,13 +9,15 @@
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %define use_libproxy 0
 %define make_install %{__make} install DESTDIR=%{?buildroot}
+%define use_tokens 0
 %else
 %define use_libproxy 1
+%define use_tokens 1
 %endif
 
 Name:		openconnect
 Version:	5.01
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -28,6 +30,9 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
 BuildRequires:	autoconf automake libtool trousers-devel python gettext
+%if %{use_tokens}
+BuildRequires:  pkgconfig(liboath) pkgconfig(stoken)
+%endif
 %if 0%{?fedora}
 %if !(%{build_compat_lib})
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
@@ -154,6 +159,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Jun 06 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-2
+- Build with stoken and OATH support.
+
 * Sat Jun 01 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-1
 - Update to 5.01 release (#955710, #964329, #964650)
 
