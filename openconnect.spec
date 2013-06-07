@@ -28,40 +28,35 @@ Source1:	library15.c
 Source2:	libopenconnect15.map
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	autoconf automake libtool trousers-devel python gettext
-%if %{use_tokens}
-BuildRequires:  pkgconfig(liboath) pkgconfig(stoken)
-%endif
+BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
+BuildRequires:	autoconf automake libtool python gettext
 %if 0%{?fedora}
 %if !(%{build_compat_lib})
-Obsoletes:	openconnect-lib-compat < %{version}-%{release}
+Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
 %endif
 Requires:	vpnc-script
-# Older versions in F16 won't find openconnect in /usr/sbin:
-Conflicts:	NetworkManager-openconnect < 0.9.0-3
 %else
 Requires:	vpnc
 %endif
 
-%if %use_gnutls
-# For F16, we need the fix for https://bugzilla.redhat.com/show_bug.cgi?id=826293
-BuildRequires:	gnutls-devel >= 2.12.14-3
-Requires:	gnutls >= 2.12.14-3
+%if %{use_gnutls}
+BuildRequires:	pkgconfig(gnutls) trousers-devel
 %endif
 %if %{use_libproxy}
-BuildRequires:	libproxy-devel
+BuildRequires:	pkgconfig(libproxy-1.0)
+%endif
+%if %{use_tokens}
+BuildRequires:  pkgconfig(liboath) pkgconfig(stoken)
 %endif
 
-
 %description
-This package provides a client for Cisco's "AnyConnect" VPN, which uses
-HTTPS and DTLS protocols.
+This package provides a client for the Cisco AnyConnect VPN protocol, which
+is based on HTTPS and DTLS.
 
 %package devel
 Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
 %if 0%{?rhel} && 0%{?rhel} <= 5
 Requires: openssl-devel zlib-devel
@@ -75,7 +70,7 @@ for NetworkManager etc.
 %package lib-compat
 Summary: Compatibility library for OpenConnect authentication clients
 Group: Applications/Internet
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 
 %description lib-compat
 This package provides a backward-compatible library for use by GNOME and KDE
