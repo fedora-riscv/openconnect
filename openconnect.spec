@@ -16,8 +16,8 @@
 %endif
 
 Name:		openconnect
-Version:	5.01
-Release:	2%{?dist}
+Version:	5.02
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -154,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 01 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.02-1
+- Update to 5.02 release (#981911, #991653, #1031886)
+
 * Thu Jun 06 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-2
 - Build with stoken and OATH support.
 
