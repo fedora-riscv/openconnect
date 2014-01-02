@@ -16,8 +16,8 @@
 %endif
 
 Name:		openconnect
-Version:	5.01
-Release:	4%{?dist}
+Version:	5.02
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -154,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 01 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.02-1
+- Update to 5.02 release (#981911, #991653, #1031886)
+
 * Sat Aug 17 2013 Peter Robinson <pbrobinson@fedoraproject.org> 5.01-4
 - Fix install of docs
 
