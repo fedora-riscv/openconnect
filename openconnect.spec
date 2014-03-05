@@ -12,7 +12,7 @@
 %endif
 
 Name:		openconnect
-Version:	5.02
+Version:	5.99
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -86,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%{_libdir}/libopenconnect.so.2*
+%{_libdir}/libopenconnect.so.3*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Mar 05 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.99-1
+- Update to 5.99 release
+
 * Wed Jan 01 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.02-1
 - Update to 5.02 release (#981911, #991653, #1031886)
 
