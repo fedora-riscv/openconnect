@@ -14,7 +14,7 @@
 %endif
 
 Name:		openconnect
-Version:	5.01
+Version:	5.03
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -154,6 +154,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-1
+- Update to 5.03 release
+
 * Sat Jun 01 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-1
 - Update to 5.01 release (#955710, #964329, #964650)
 
