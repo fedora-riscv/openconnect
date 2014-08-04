@@ -15,7 +15,7 @@
 
 Name:		openconnect
 Version:	5.03
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -24,6 +24,9 @@ URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 Source1:	library15.c
 Source2:	libopenconnect15.map
+Patch1:		openconnect-5.03-crash-token-mode.patch
+Patch2:		openconnect-5.03-off-by-one.patch
+Patch3:		openconnect-5.03-url-encoding.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
@@ -79,6 +82,11 @@ of the library.
 
 %prep
 %setup -q
+
+%patch1 -p1 -b .crash
+%patch2 -p1 -b .off-by-one
+%patch3 -p1 -b .url-encoding
+
 %if %{build_compat_lib}
 cp %{SOURCE1} .
 cp %{SOURCE2} libopenconnect15.map.in
@@ -154,6 +162,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-2
+- Applied bug fixes from 5.99 release
+
 * Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-1
 - Update to 5.03 release
 

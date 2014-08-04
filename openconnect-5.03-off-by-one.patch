@@ -1,0 +1,31 @@
+From 80dcbb666640427f10bf113f7b01b4b2bf4423f1 Mon Sep 17 00:00:00 2001
+From: David Woodhouse <David.Woodhouse@intel.com>
+Date: Mon, 14 Jul 2014 14:20:04 +0100
+Subject: [PATCH] Fix off-by-one in xmlnode_msg() handling of error messages
+
+There was an off-by-one which meant instead of just replacing the '%s' when
+inserting a parameter, it would also replace the character *after* it in
+the format string.
+
+This bug was introduced in v3.13 by commit d126095d ("Refactor
+xmlnode_msg() not to use server-provided string as asprintf() format.")
+
+Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+---
+ auth.c            | 2 +-
+ www/changelog.xml | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/auth.c b/auth.c
+index cc0dfd7..73b04da 100644
+--- a/auth.c
++++ b/auth.c
+@@ -356,7 +356,7 @@ static char *xmlnode_msg(xmlNode *xml_node)
+ 		if (params[nr_params]) {
+ 			paramlen = strlen(params[nr_params]);
+ 			/* Move rest of fmt string up... */
+-			memmove(pct - 1 + paramlen, pct + 2, strlen(pct) - 1);
++			memmove(pct + paramlen, pct + 2, strlen(pct + 2) + 1);
+ 			/* ... and put the string parameter in where the '%s' was */
+ 			memcpy(pct, params[nr_params], paramlen);
+ 			pct += paramlen;

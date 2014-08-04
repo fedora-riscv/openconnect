@@ -1,0 +1,32 @@
+From 0e5eea87a8e0a4c75236419f0fd40ff903c45ad5 Mon Sep 17 00:00:00 2001
+From: David Woodhouse <David.Woodhouse@intel.com>
+Date: Fri, 25 Jul 2014 00:04:38 +0100
+Subject: [PATCH] Fix signedness in url-encoding for legacy auth postings
+
+---
+ auth.c            | 4 ++--
+ www/changelog.xml | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/auth.c b/auth.c
+index 73b04da..a2130fd 100644
+--- a/auth.c
++++ b/auth.c
+@@ -64,7 +64,7 @@ static int append_opt(char *body, int bodylen, char *opt, char *name)
+ 		} else {
+ 			if (len >= bodylen - 3)
+ 				return -ENOSPC;
+-			sprintf(body+len, "%%%02x", *opt);
++			sprintf(body+len, "%%%02x", (unsigned char)*opt);
+ 			len += 3;
+ 		}
+ 		opt++;
+@@ -82,7 +82,7 @@ static int append_opt(char *body, int bodylen, char *opt, char *name)
+ 		} else {
+ 			if (len >= bodylen - 3)
+ 				return -ENOSPC;
+-			sprintf(body+len, "%%%02X", *name);
++			sprintf(body+len, "%%%02x", (unsigned char)*name);
+ 			len += 3;
+ 		}
+ 		name++;
