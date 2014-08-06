@@ -89,6 +89,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libopenconnect.so.3*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
+%{_docdir}/%{name}
+
 %doc TODO COPYING.LGPL
 
 %files devel
