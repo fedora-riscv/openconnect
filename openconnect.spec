@@ -13,13 +13,14 @@
 
 Name:		openconnect
 Version:	6.00
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
+Patch0:		openconnect-6.00-no-ecdhe.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -62,6 +63,8 @@ for NetworkManager etc.
 %prep
 %setup -q
 
+%patch0 -p1 -b .no-ecdhe
+
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
 %if !%{use_gnutls}
@@ -100,6 +103,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 6.00-2
+- When compiling with old gnutls version completely disable ECDHE instead
+  of disabling the curves.
+
 * Tue Jul 08 2014 David Woodhouse <David.Woodhouse@intel.com> - 6.00-1
 - Update to 6.00 release
 
