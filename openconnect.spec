@@ -15,7 +15,7 @@
 
 Name:		openconnect
 Version:	5.03
-Release:	2%{?dist}
+Release:	3%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -27,6 +27,7 @@ Source2:	libopenconnect15.map
 Patch1:		openconnect-5.03-crash-token-mode.patch
 Patch2:		openconnect-5.03-off-by-one.patch
 Patch3:		openconnect-5.03-url-encoding.patch
+Patch4:		openconnect-5.03-no-ecdhe.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
@@ -86,6 +87,7 @@ of the library.
 %patch1 -p1 -b .crash
 %patch2 -p1 -b .off-by-one
 %patch3 -p1 -b .url-encoding
+%patch4 -p1 -b .ecdhe
 
 %if %{build_compat_lib}
 cp %{SOURCE1} .
@@ -162,6 +164,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-3
+- When compiling with old gnutls version completely disable ECDHE instead
+  of disabling the curves.
+
 * Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-2
 - Applied bug fixes from 5.99 release
 

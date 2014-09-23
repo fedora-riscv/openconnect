@@ -1,0 +1,12 @@
+diff -ur openconnect-5.03.orig/gnutls.c openconnect-5.03/gnutls.c
+--- openconnect-5.03.orig/gnutls.c	2014-02-03 14:11:19.000000000 +0100
++++ openconnect-5.03/gnutls.c	2014-09-23 17:01:37.312555514 +0200
+@@ -1915,7 +1915,7 @@
+ 	err = gnutls_priority_set_direct(vpninfo->https_sess,
+ 					 "NORMAL:-VERS-TLS-ALL:+VERS-TLS1.0:"
+ #if GNUTLS_VERSION_MAJOR >= 3
+-					 "-CURVE-ALL:"
++					 "-CURVE-ALL:-ECDHE-RSA:-ECDHE-ECDSA:"
+ #endif
+ 					 "%COMPAT:%DISABLE_SAFE_RENEGOTIATION:%LATEST_RECORD_VERSION",
+ 					 NULL);
