@@ -13,14 +13,14 @@
 
 Name:		openconnect
 Version:	7.00
-Release:	1%{?dist}
+Release:	2%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
-Patch0:		openconnect-6.00-no-ecdhe.patch
+Patch0:		0001-When-compiling-with-old-gnutls-version-completely-di.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -101,6 +101,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Nov 27 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.00-2
+- Add upstreamed version of Nikos' curve patch with version.c fixed
+
 * Thu Nov 27 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.00-1
 - Update to 7.00 release
 
