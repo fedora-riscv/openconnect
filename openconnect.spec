@@ -12,15 +12,14 @@
 %endif
 
 Name:		openconnect
-Version:	7.00
-Release:	2%{?dist}
+Version:	7.01
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
-Patch0:		0001-When-compiling-with-old-gnutls-version-completely-di.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -63,8 +62,6 @@ for NetworkManager etc.
 %prep
 %setup -q
 
-%patch0 -p1 -b .no-ecdhe
-
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
 %if !%{use_gnutls}
@@ -101,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sun Dec 07 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.01-1
+- Update to 7.01 release
+
 * Thu Nov 27 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.00-2
 - Add upstreamed version of Nikos' curve patch with version.c fixed
 
