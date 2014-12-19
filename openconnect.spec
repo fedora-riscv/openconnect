@@ -12,7 +12,7 @@
 %endif
 
 Name:		openconnect
-Version:	7.01
+Version:	7.02
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -98,6 +98,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Dec 19 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.02-1
+- Update to 7.02 release (#1175951)
+
 * Sun Dec 07 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.01-1
 - Update to 7.01 release
 
