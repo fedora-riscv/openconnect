@@ -20,7 +20,6 @@ Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
-Patch0:		openconnect-6.00-no-ecdhe.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -62,8 +61,6 @@ for NetworkManager etc.
 
 %prep
 %setup -q
-
-%patch0 -p1 -b .no-ecdhe
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
