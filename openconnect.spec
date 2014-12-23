@@ -12,8 +12,8 @@
 %endif
 
 Name:		openconnect
-Version:	6.00
-Release:	2%{?dist}
+Version:	7.02
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -33,7 +33,7 @@ Requires:	vpnc
 %endif
 
 %if %{use_gnutls}
-BuildRequires:	pkgconfig(gnutls) trousers-devel
+BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
 %endif
 %if %{use_libproxy}
 BuildRequires:	pkgconfig(libproxy-1.0)
@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%{_libdir}/libopenconnect.so.3*
+%{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
 %{_docdir}/%{name}
@@ -103,6 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Dec 23 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.02-1
+- Update to 7.02 release to align with f21
+
 * Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 6.00-2
 - When compiling with old gnutls version completely disable ECDHE instead
   of disabling the curves.
