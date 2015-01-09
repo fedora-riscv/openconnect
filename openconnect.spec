@@ -13,7 +13,7 @@
 
 Name:		openconnect
 Version:	7.03
-Release:	1
+Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
