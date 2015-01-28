@@ -12,7 +12,7 @@
 %endif
 
 Name:		openconnect
-Version:	7.02
+Version:	7.04
 Release:	1%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -23,7 +23,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
-BuildRequires:	autoconf automake libtool python gettext
+BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
 Requires:	vpnc-script
@@ -100,6 +100,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 28 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.04-1
+- Update to 7.04 release to align with f21
+
 * Tue Dec 23 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.02-1
 - Update to 7.02 release to align with f21
 
