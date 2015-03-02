@@ -1,3 +1,11 @@
+#% define gitcount 211
+#% define gitrev 584c84f
+
+%if 0%{?gitcount} > 0
+%define gitsuffix -%{gitcount}-g%{gitrev}
+%define relsuffix .git%{gitcount}_%{gitrev}
+%endif
+
 # RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
@@ -13,13 +21,13 @@
 
 Name:		openconnect
 Version:	7.04
-Release:	1%{?dist}
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-7.04%{?gitsuffix}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -60,7 +68,7 @@ the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
 %prep
-%setup -q
+%setup -q -n openconnect-7.04%{?gitsuffix}
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
