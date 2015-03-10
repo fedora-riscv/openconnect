@@ -20,7 +20,7 @@
 %endif
 
 Name:		openconnect
-Version:	7.04
+Version:	7.05
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Mar 31 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-1
+- Update to 7.05 release
+
 * Wed Jan 28 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.04-1
 - Update to 7.04 release to align with f21
 
