@@ -27,7 +27,7 @@ Summary:	Open client for Cisco AnyConnect VPN
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-7.04%{?gitsuffix}.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -68,7 +68,7 @@ the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
 %prep
-%setup -q -n openconnect-7.04%{?gitsuffix}
+%setup -q -n openconnect-%{version}%{?gitsuffix}
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
