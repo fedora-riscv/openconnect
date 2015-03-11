@@ -21,13 +21,16 @@
 
 Name:		openconnect
 Version:	7.05
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
+Patch1:		openconnect-7.05-override-default-prio-string.patch
+Patch2:		openconnect-7.05-ensure-dtls-ciphers-match-the-allowed.patch
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
@@ -70,8 +73,13 @@ for NetworkManager etc.
 %prep
 %setup -q -n openconnect-%{version}%{?gitsuffix}
 
+%patch1 -p1 -b .prio
+%patch2 -p1 -b .ciphers
+
 %build
+autoreconf -fvi
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
+		--with-default-gnutls-priority="@SYSTEM" \
 %if !%{use_gnutls}
 		--with-openssl --without-openssl-version-check \
 %endif
@@ -106,6 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Mar 11 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-2
+- Utilize and enforce system-wide policies (#1179331)
+
 * Sun Jan 25 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.05-1
 - Update to 7.05 release
 
