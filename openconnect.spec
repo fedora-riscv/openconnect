@@ -20,8 +20,8 @@
 %endif
 
 Name:		openconnect
-Version:	7.05
-Release:	2%{?relsuffix}%{?dist}
+Version:	7.06
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -114,10 +114,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Mar 17 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.06-1
+- Update to 7.06 release
+
 * Wed Mar 11 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-2
 - Utilize and enforce system-wide policies (#1179331)
 
-* Sun Jan 25 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.05-1
+* Tue Mar 10 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.05-1
 - Update to 7.05 release
 
 * Sun Jan 25 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.04-1
