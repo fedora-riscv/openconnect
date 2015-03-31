@@ -1,0 +1,227 @@
+diff --git a/cstp.c b/cstp.c
+index d0d7eff..67d2f7e 100644
+--- a/cstp.c
++++ b/cstp.c
+@@ -129,18 +129,6 @@ static void calculate_mtu(struct openconnect_info *vpninfo, int *base_mtu, int *
+ 		*mtu = 1280;
+ }
+ 
+-/* For OpenSSL the configure script detects DTLS 1.2 support.
+- * For GnuTLS just check for v3.2.0+ */
+-#if defined(DTLS_GNUTLS) && GNUTLS_VERSION_NUMBER >= 0x030200
+-#define HAVE_DTLS12 1
+-#endif
+-
+-#ifdef HAVE_DTLS12
+-# define DEFAULT_CIPHER_LIST "OC-DTLS1_2-AES256-GCM:OC-DTLS1_2-AES128-GCM:AES256-SHA:AES128-SHA:DES-CBC3-SHA:DES-CBC-SHA"
+-#else
+-# define DEFAULT_CIPHER_LIST "AES256-SHA:AES128-SHA:DES-CBC3-SHA:DES-CBC-SHA"
+-#endif
+-
+ static void append_compr_types(struct oc_text_buf *buf, const char *proto, int avail)
+ {
+ 	if (avail) {
+@@ -194,6 +182,12 @@ static int start_cstp_connection(struct openconnect_info *vpninfo)
+ 	const char *old_addr6 = vpninfo->ip_info.addr6;
+ 	const char *old_netmask6 = vpninfo->ip_info.netmask6;
+ 	int base_mtu, mtu;
++	const char *default_cipher_list;
++
++	if (gnutls_check_version("3.2.0"))
++		default_cipher_list = "OC-DTLS1_2-AES256-GCM:OC-DTLS1_2-AES128-GCM:AES256-SHA:AES128-SHA:DES-CBC3-SHA:DES-CBC-SHA";
++	else
++		default_cipher_list = "AES256-SHA:AES128-SHA:DES-CBC3-SHA:DES-CBC-SHA";
+ 
+ 	/* Clear old options which will be overwritten */
+ 	vpninfo->ip_info.addr = vpninfo->ip_info.netmask = NULL;
+@@ -239,8 +233,9 @@ static int start_cstp_connection(struct openconnect_info *vpninfo)
+ 			buf_free(reqbuf);
+ 			return -EINVAL;
+ 		}
++
+ 		buf_append(reqbuf, "\r\nX-DTLS-CipherSuite: %s\r\n",
+-			   vpninfo->dtls_ciphers ? : DEFAULT_CIPHER_LIST);
++			   vpninfo->dtls_ciphers ? : default_cipher_list);
+ 
+ 		append_compr_types(reqbuf, "DTLS", vpninfo->req_compr & ~COMPR_DEFLATE);
+ 	}
+diff --git a/dtls.c b/dtls.c
+index abffbf1..3e58477 100644
+--- a/dtls.c
++++ b/dtls.c
+@@ -438,25 +438,28 @@ void dtls_shutdown(struct openconnect_info *vpninfo)
+ #include <gnutls/dtls.h>
+ #include "gnutls.h"
+ 
++#if GNUTLS_VERSION_NUMBER < 0x030200
++# define GNUTLS_DTLS1_2 202
++#endif
++
+ struct {
+ 	const char *name;
+ 	gnutls_protocol_t version;
+ 	gnutls_cipher_algorithm_t cipher;
+ 	gnutls_mac_algorithm_t mac;
+ 	const char *prio;
++	const char *min_gnutls_version;
+ } gnutls_dtls_ciphers[] = {
+ 	{ "AES128-SHA", GNUTLS_DTLS0_9, GNUTLS_CIPHER_AES_128_CBC, GNUTLS_MAC_SHA1,
+-	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+AES-128-CBC:+SHA1:+RSA:%COMPAT" },
++	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+AES-128-CBC:+SHA1:+RSA:%COMPAT", "2.12.0" },
+ 	{ "AES256-SHA", GNUTLS_DTLS0_9, GNUTLS_CIPHER_AES_256_CBC, GNUTLS_MAC_SHA1,
+-	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+AES-256-CBC:+SHA1:+RSA:%COMPAT" },
++	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+AES-256-CBC:+SHA1:+RSA:%COMPAT", "2.12.0" },
+ 	{ "DES-CBC3-SHA", GNUTLS_DTLS0_9, GNUTLS_CIPHER_3DES_CBC, GNUTLS_MAC_SHA1,
+-	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+3DES-CBC:+SHA1:+RSA:%COMPAT" },
+-#if GNUTLS_VERSION_NUMBER >= 0x030207 /* if DTLS 1.2 is supported (and a bug in gnutls is solved) */
++	  "NONE:+VERS-DTLS0.9:+COMP-NULL:+3DES-CBC:+SHA1:+RSA:%COMPAT", "2.12.0" },
+ 	{ "OC-DTLS1_2-AES128-GCM", GNUTLS_DTLS1_2, GNUTLS_CIPHER_AES_128_GCM, GNUTLS_MAC_AEAD,
+-	  "NONE:+VERS-DTLS1.2:+COMP-NULL:+AES-128-GCM:+AEAD:+RSA:%COMPAT:+SIGN-ALL" },
++	  "NONE:+VERS-DTLS1.2:+COMP-NULL:+AES-128-GCM:+AEAD:+RSA:%COMPAT:+SIGN-ALL", "3.2.7" },
+ 	{ "OC-DTLS1_2-AES256-GCM", GNUTLS_DTLS1_2, GNUTLS_CIPHER_AES_256_GCM, GNUTLS_MAC_AEAD,
+-	  "NONE:+VERS-DTLS1.2:+COMP-NULL:+AES-256-GCM:+AEAD:+RSA:%COMPAT:+SIGN-ALL" },
+-#endif
++	  "NONE:+VERS-DTLS1.2:+COMP-NULL:+AES-256-GCM:+AEAD:+RSA:%COMPAT:+SIGN-ALL", "3.2.7" },
+ };
+ 
+ #define DTLS_SEND gnutls_record_send
+@@ -470,6 +473,8 @@ static int start_dtls_handshake(struct openconnect_info *vpninfo, int dtls_fd)
+ 	int cipher;
+ 
+ 	for (cipher = 0; cipher < sizeof(gnutls_dtls_ciphers)/sizeof(gnutls_dtls_ciphers[0]); cipher++) {
++		if (gnutls_check_version(gnutls_dtls_ciphers[cipher].min_gnutls_version) == NULL)
++			continue;
+ 		if (!strcmp(vpninfo->dtls_cipher, gnutls_dtls_ciphers[cipher].name))
+ 			goto found_cipher;
+ 	}
+diff --git a/gnutls.c b/gnutls.c
+index 3f79a22..70a86a3 100644
+--- a/gnutls.c
++++ b/gnutls.c
+@@ -471,13 +471,13 @@ static int load_pkcs12_certificate(struct openconnect_info *vpninfo,
+    reference (c1ef7efb in master, 5196786c in gnutls_3_0_x-2)? */
+ static int check_issuer_sanity(gnutls_x509_crt_t cert, gnutls_x509_crt_t issuer)
+ {
+-#if GNUTLS_VERSION_NUMBER > 0x030014
+-	return 0;
+-#else
+ 	unsigned char id1[512], id2[512];
+ 	size_t id1_size = 512, id2_size = 512;
+ 	int err;
+ 
++	if (gnutls_check_version("3.0.15"))
++		return 0;
++
+ 	err = gnutls_x509_crt_get_authority_key_id(cert, id1, &id1_size, NULL);
+ 	if (err)
+ 		return 0;
+@@ -490,7 +490,6 @@ static int check_issuer_sanity(gnutls_x509_crt_t cert, gnutls_x509_crt_t issuer)
+ 
+ 	/* EEP! */
+ 	return -EIO;
+-#endif
+ }
+ 
+ static int count_x509_certificates(gnutls_datum_t *datum)
+@@ -2000,14 +1999,14 @@ static int verify_peer(gnutls_session_t session)
+ 			if (inet_pton(AF_INET6, vpninfo->hostname + 1, addrbuf) > 0)
+ 				addrlen = 16;
+ 			*p = ']';
++		} else if (gnutls_check_version("3.3.6") == NULL) {
++			/* And before 3.3.6 it didn't check IP addresses at all. */
++			if (inet_pton(AF_INET, vpninfo->hostname, addrbuf) > 0)
++				addrlen = 4;
++			if (inet_pton(AF_INET6, vpninfo->hostname, addrbuf) > 0)
++				addrlen = 16;
+ 		}
+-#if GNUTLS_VERSION_NUMBER < 0x030306
+-		/* And before 3.3.6 it didn't check IP addresses at all. */
+-		else if (inet_pton(AF_INET, vpninfo->hostname, addrbuf) > 0)
+-			addrlen = 4;
+-		else if (inet_pton(AF_INET6, vpninfo->hostname, addrbuf) > 0)
+-			addrlen = 16;
+-#endif
++
+ 		if (!addrlen) {
+ 			/* vpninfo->hostname was not a bare IP address. Nothing to do */
+ 			goto badhost;
+@@ -2046,29 +2045,11 @@ static int verify_peer(gnutls_session_t session)
+ }
+ 
+ 
+-/* The F5 firewall is confused when the TLS client hello is between
+- * 256 and 512 bytes. By disabling several TLS options we force the
+- * client hello to be < 256 bytes. We don't do that in gnutls versions
+- * >= 3.2.9 as there the %COMPAT keyword ensures that the client hello
+- * will be outside that range.
+- */
+-#if GNUTLS_VERSION_NUMBER >= 0x030209
+-# define DEFAULT_PRIO "NORMAL:-VERS-SSL3.0:%COMPAT"
+-#else
+-# define _DEFAULT_PRIO "NORMAL:-VERS-TLS-ALL:+VERS-TLS1.0:" \
+-	"%COMPAT:%DISABLE_SAFE_RENEGOTIATION:%LATEST_RECORD_VERSION"
+-# if GNUTLS_VERSION_MAJOR >= 3
+-#  define DEFAULT_PRIO _DEFAULT_PRIO":-CURVE-ALL:-ECDHE-RSA:-ECDHE-ECDSA"
+-#else
+-#  define DEFAULT_PRIO _DEFAULT_PRIO
+-# endif
+-#endif
+-
+ int openconnect_open_https(struct openconnect_info *vpninfo)
+ {
+ 	int ssl_sock = -1;
+ 	int err;
+-	const char * prio;
++	char prio[256];
+ 
+ 	if (vpninfo->https_sess)
+ 		return 0;
+@@ -2193,10 +2174,24 @@ int openconnect_open_https(struct openconnect_info *vpninfo)
+ 				       vpninfo->hostname,
+ 				       strlen(vpninfo->hostname));
+ 
+-	if (vpninfo->pfs) {
+-		prio = DEFAULT_PRIO":-RSA";
++	/* The F5 firewall is confused when the TLS client hello is between
++	 * 256 and 512 bytes. By disabling several TLS options we force the
++	 * client hello to be < 256 bytes. We don't do that in gnutls versions
++	 * >= 3.2.9 as there the %COMPAT keyword ensures that the client hello
++	 * will be outside that range.
++	 */
++	if (gnutls_check_version("3.2.9")) {
++		snprintf(prio, sizeof(prio), "NORMAL:-VERS-SSL3.0:%%COMPAT%s", vpninfo->pfs?":-RSA":"");
+ 	} else {
+-		prio = DEFAULT_PRIO;
++		if (gnutls_check_version("3.0.0")) {
++			snprintf(prio, sizeof(prio), "NORMAL:-VERS-TLS-ALL:+VERS-TLS1.0:" \
++			       "%%COMPAT:%%DISABLE_SAFE_RENEGOTIATION:%%LATEST_RECORD_VERSION" \
++			       ":-CURVE-ALL:-ECDHE-RSA:-ECDHE-ECDSA%s", vpninfo->pfs?":-RSA":"");
++		} else {
++			snprintf(prio, sizeof(prio), "NORMAL:-VERS-TLS-ALL:+VERS-TLS1.0:" \
++			       "%%COMPAT:%%DISABLE_SAFE_RENEGOTIATION:%%LATEST_RECORD_VERSION%s",
++			       vpninfo->pfs?":-RSA":"");
++		}
+ 	}
+ 
+ 	err = gnutls_priority_set_direct(vpninfo->https_sess,
+@@ -2376,13 +2371,13 @@ int openconnect_init_ssl(void)
+ char *get_gnutls_cipher(gnutls_session_t session)
+ {
+ 	char *str;
+-#if GNUTLS_VERSION_NUMBER > 0x03010a
+-	str = gnutls_session_get_desc(session);
+-#else
+-	str = gnutls_strdup(gnutls_cipher_suite_get_name(
+-		gnutls_kx_get(session), gnutls_cipher_get(session),
+-		gnutls_mac_get(session)));
+-#endif
++
++	if (gnutls_check_version("3.1.11"))
++		str = gnutls_session_get_desc(session);
++	else
++		str = gnutls_strdup(gnutls_cipher_suite_get_name(
++			gnutls_kx_get(session), gnutls_cipher_get(session),
++			gnutls_mac_get(session)));
+ 	return str;
+ }
+ 

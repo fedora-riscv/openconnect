@@ -27,8 +27,9 @@ Summary:	Open client for Cisco AnyConnect VPN
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-7.04%{?gitsuffix}.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{?version}%{?gitsuffix}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Patch0:		openconnect-7.05-dynamic-checks.patch
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
@@ -68,11 +69,14 @@ the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
 %prep
-%setup -q -n openconnect-7.04%{?gitsuffix}
+%setup -q -n openconnect-%{?version}%{?gitsuffix}
+%patch0 -p1 -b .dynamic-checks
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-%if !%{use_gnutls}
+%if %{use_gnutls}
+		--with-gnutls \
+%else
 		--with-openssl --without-openssl-version-check \
 %endif
 		--htmldir=%{_docdir}/%{name}
@@ -110,6 +114,8 @@ rm -rf $RPM_BUILD_ROOT
 %changelog
 * Tue Mar 31 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-1
 - Update to 7.05 release
+- Allow compiling with old gnutls version but using the new features
+  when linked with a newer version.
 
 * Wed Jan 28 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.04-1
 - Update to 7.04 release to align with f21
