@@ -47,7 +47,7 @@ BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
 BuildRequires:	pkgconfig(libproxy-1.0)
 %endif
 %if %{use_tokens}
-BuildRequires:  pkgconfig(liboath) pkgconfig(stoken)
+BuildRequires:  pkgconfig(stoken)
 %endif
 
 %description
