@@ -20,7 +20,7 @@
 %endif
 
 Name:		openconnect
-Version:	7.05
+Version:	7.06
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -112,6 +112,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue May 05 2015 Jan Grulich <jgrulich@redhat.com> - 7.06-1
+- Update to 7.06 release
+
 * Tue Mar 31 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-1
 - Update to 7.05 release
 - Allow compiling with old gnutls version but using the new features
