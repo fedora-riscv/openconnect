@@ -21,7 +21,7 @@
 
 Name:		openconnect
 Version:	7.06
-Release:	2%{?relsuffix}%{?dist}
+Release:	3%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -106,6 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
+%doc %{_docdir}/%{name}
 
 %files devel
 %defattr(-,root,root,-)
@@ -114,6 +115,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Oct 29 2015 Peter Robinson <pbrobinson@fedoraproject.org> 7.06-3
+- Fix FTBFS by including packaged docs
+
 * Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.06-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 
