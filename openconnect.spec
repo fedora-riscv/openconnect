@@ -21,7 +21,7 @@
 
 Name:		openconnect
 Version:	7.06
-Release:	3%{?relsuffix}%{?dist}
+Release:	4%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -30,6 +30,7 @@ URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
 Patch1:		openconnect-7.05-override-default-prio-string.patch
 Patch2:		openconnect-7.05-ensure-dtls-ciphers-match-the-allowed.patch
+Patch3:         fix-ipv6-only.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -75,6 +76,7 @@ for NetworkManager etc.
 
 %patch1 -p1 -b .prio
 %patch2 -p1 -b .ciphers
+%patch3 -p1 -b .ipv6
 
 %build
 autoreconf -fvi
@@ -115,6 +117,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Feb 02 2016 Dennis Gilmore <dennis@ausil.us> - 7.06-4
+- add upstream patch to fix ipv6 only setups
+
 * Thu Oct 29 2015 Peter Robinson <pbrobinson@fedoraproject.org> 7.06-3
 - Fix FTBFS by including packaged docs
 

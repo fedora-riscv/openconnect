@@ -1,0 +1,33 @@
+From 430f8bcab5c0e10881f7dcdc07a15803ebf31607 Mon Sep 17 00:00:00 2001
+From: David Woodhouse <David.Woodhouse@intel.com>
+Date: Thu, 26 Nov 2015 08:02:34 +0000
+Subject: [PATCH] Fix IPv6-only connectivity
+
+Commit a5dd38ec8 ("Assign Address-IP6 field to netmask instead of address")
+broke IPv6-only configurations, because we only check for ip_info.addr
+and ip_info.addr6 being NULL. We need to allow the connection to continue
+when ip_info.netmask6 is non-NULL too.
+
+Reported-by: Dennis Gilmore <dennis@ausil.us>
+Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
+---
+ cstp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/cstp.c b/cstp.c
+index 4aad2c1..b9408c7 100644
+--- a/cstp.c
++++ b/cstp.c
+@@ -494,7 +494,8 @@ static int start_cstp_connection(struct openconnect_info *vpninfo)
+ 	}
+ 	vpninfo->ip_info.mtu = mtu;
+ 
+-	if (!vpninfo->ip_info.addr && !vpninfo->ip_info.addr6) {
++	if (!vpninfo->ip_info.addr && !vpninfo->ip_info.addr6 &&
++	    !vpninfo->ip_info.netmask6) {
+ 		vpn_progress(vpninfo, PRG_ERR,
+ 			     _("No IP address received. Aborting\n"));
+ 		return -EINVAL;
+-- 
+1.9.3
+
