@@ -28,13 +28,17 @@ Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
+%if 0%{?gitcount} == 0
+Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
+%endif
+Source2:	pubring.gpg
 Patch1:		openconnect-7.05-override-default-prio-string.patch
 Patch2:		openconnect-7.05-ensure-dtls-ciphers-match-the-allowed.patch
 Patch3:         fix-ipv6-only.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0) gnupg
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
@@ -72,6 +76,13 @@ the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
 %prep
+%if 0%{?gitcount} == 0
+gpg --homedir . --no-permission-warning \
+    --no-default-keyring --keyring %{SOURCE2} \
+    --trusted-key 63762CDA67E2F359 \
+    --verify %{SOURCE1}
+%endif
+
 %setup -q -n openconnect-%{version}%{?gitsuffix}
 
 %patch1 -p1 -b .prio
@@ -117,6 +128,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Mar 21 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-4
+- Check GPG signature as part of build
+
 * Tue Feb 02 2016 Dennis Gilmore <dennis@ausil.us> - 7.06-4
 - add upstream patch to fix ipv6 only setups
 
