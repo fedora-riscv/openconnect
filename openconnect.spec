@@ -21,7 +21,7 @@
 
 Name:		openconnect
 Version:	7.06
-Release:	5%{?relsuffix}%{?dist}
+Release:	6%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -128,7 +128,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Mon Mar 21 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-5
+* Mon Mar 21 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-6
 - Check GPG signature as part of build
 
 * Tue Feb 02 2016 Dennis Gilmore <dennis@ausil.us> - 7.06-4
