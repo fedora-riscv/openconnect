@@ -21,7 +21,7 @@
 
 Name:		openconnect
 Version:	7.06
-Release:	6%{?relsuffix}%{?dist}
+Release:	7%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -31,14 +31,15 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %if 0%{?gitcount} == 0
 Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
 %endif
-Source2:	pubring.gpg
+Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.gpg
+
 Patch1:		openconnect-7.05-override-default-prio-string.patch
 Patch2:		openconnect-7.05-ensure-dtls-ciphers-match-the-allowed.patch
 Patch3:         fix-ipv6-only.patch
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0) gnupg
+BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0) gnupg2
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
@@ -77,10 +78,7 @@ for NetworkManager etc.
 
 %prep
 %if 0%{?gitcount} == 0
-gpg --homedir . --no-permission-warning \
-    --no-default-keyring --keyring %{SOURCE2} \
-    --trusted-key 63762CDA67E2F359 \
-    --verify %{SOURCE1}
+gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0}
 %endif
 
 %setup -q -n openconnect-%{version}%{?gitsuffix}
@@ -128,6 +126,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Mar 22 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-7
+- Switch to using GPGv2 for signature check
+
 * Mon Mar 21 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-6
 - Check GPG signature as part of build
 
