@@ -1,66 +1,54 @@
-# For Fedora 17 and below, for now, build a compat libopenconnect.so.1 with OpenSSL so
-# that the upgrade path is easier.
-%define build_compat_lib 0%{?fedora} && 0%{?fedora} < 18
-
-# RHEL6 still has GnuTLS which is even more ancient than Fedora's!
+# RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
 # RHEL5 has no libproxy, and no %make_install macro
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %define use_libproxy 0
 %define make_install %{__make} install DESTDIR=%{?buildroot}
+%define use_tokens 0
 %else
 %define use_libproxy 1
+%define use_tokens 1
 %endif
 
 Name:		openconnect
-Version:	5.03
-Release:	3%{?dist}
+Version:	7.06
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}.tar.gz
-Source1:	library15.c
-Source2:	libopenconnect15.map
-Patch1:		openconnect-5.03-crash-token-mode.patch
-Patch2:		openconnect-5.03-off-by-one.patch
-Patch3:		openconnect-5.03-url-encoding.patch
-Patch4:		openconnect-5.03-no-ecdhe.patch
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{?version}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	openssl-devel libxml2-devel gtk2-devel GConf2-devel dbus-devel
-BuildRequires:	autoconf automake libtool trousers-devel python gettext
-%if 0%{?fedora}
-%if !(%{build_compat_lib})
-Obsoletes:	openconnect-lib-compat < %{version}-%{release}
-%endif
+BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
+BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
+%if 0%{?fedora} || 0%{?rhel} >= 7
+Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
 Requires:	vpnc-script
-# Older versions in F16 won't find openconnect in /usr/sbin:
-Conflicts:	NetworkManager-openconnect < 0.9.0-3
 %else
 Requires:	vpnc
 %endif
 
-%if %use_gnutls
-# For F16, we need the fix for https://bugzilla.redhat.com/show_bug.cgi?id=826293
-BuildRequires:	gnutls-devel >= 2.12.14-3
-Requires:	gnutls >= 2.12.14-3
+%if %{use_gnutls}
+BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
 %endif
 %if %{use_libproxy}
-BuildRequires:	libproxy-devel
+BuildRequires:	pkgconfig(libproxy-1.0)
+%endif
+%if %{use_tokens}
+BuildRequires:  pkgconfig(stoken)
 %endif
 
-
 %description
-This package provides a client for Cisco's "AnyConnect" VPN, which uses
-HTTPS and DTLS protocols.
+This package provides a client for the Cisco AnyConnect VPN protocol, which
+is based on HTTPS and DTLS.
 
 %package devel
 Summary: Development package for OpenConnect VPN authentication tools
 Group: Applications/Internet
-Requires: %{name} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
 %if 0%{?rhel} && 0%{?rhel} <= 5
 Requires: openssl-devel zlib-devel
@@ -71,69 +59,22 @@ This package provides the core HTTP and authentication support from
 the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
-%package lib-compat
-Summary: Compatibility library for OpenConnect authentication clients
-Group: Applications/Internet
-Requires: %{name} = %{version}-%{release}
-
-%description lib-compat
-This package provides a backward-compatible library for use by GNOME and KDE
-NetworkManager clients which have not yet been rebuilt to use the new version
-of the library.
-
 %prep
-%setup -q
-
-%patch1 -p1 -b .crash
-%patch2 -p1 -b .off-by-one
-%patch3 -p1 -b .url-encoding
-%patch4 -p1 -b .ecdhe
-
-%if %{build_compat_lib}
-cp %{SOURCE1} .
-cp %{SOURCE2} libopenconnect15.map.in
-# In Fedora 16 we fixed the gnutls_record_get_direction() bug without upgrading
-sed 's/2\.12\.16/2.12.14/' -i configure
-touch version.c
-%endif
+%setup -q -n openconnect-%{?version}
 
 %build
-%if %{build_compat_lib}
-mkdir compat
-cd compat
-%global _configure ../configure
-%configure --with-vpnc-script=/etc/vpnc/vpnc-script --htmldir=%{_docdir}/%{name}-%{version} --without-gnutls --without-openssl-version-check
-# Hack: Build with library15.c instead of library.c and use the old version
-# script and soname.
-sed -e 's/library\./library15./g' \
-    -e 's/libopenconnect.map/libopenconnect15.map/g' \
-    -e 's/\$(LT_VER_ARG) 2:./-version-number 1:5/g' \
-    Makefile > Makefile.lib15
-# We configure with --disable-dependency-tracking so we do not need this:
-# cp .deps/libopenconnect_la-library.Plo .deps/libopenconnect_la-library2.Plo
-
-# Do not let it rebuild the symbol map that we provided
-cp %{SOURCE2} .
-make -f Makefile.lib15 libopenconnect.la V=1
-cd ..
-%global _configure ./configure
-%endif # {build_compat_lib}
-
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-%if !%{use_gnutls}
+%if %{use_gnutls}
+		--with-gnutls \
+%else
 		--with-openssl --without-openssl-version-check \
 %endif
-		--htmldir=%{_docdir}/%{name}-%{version}
+		--htmldir=%{_docdir}/%{name}
 make %{?_smp_mflags} V=1
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%if %{build_compat_lib}
-mkdir -p $RPM_BUILD_ROOT/%{_libdir}
-install -m0755 compat/.libs/libopenconnect.so.1.5.0 ${RPM_BUILD_ROOT}/%{_libdir}
-ln -sf libopenconnect.so.1.5.0 ${RPM_BUILD_ROOT}/%{_libdir}/libopenconnect.so.1
-%endif
 %make_install
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
@@ -147,15 +88,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(-,root,root,-)
-%{_libdir}/libopenconnect.so.2*
+%{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
-%doc TODO COPYING.LGPL
+#%{_docdir}/%{name}
 
-%if %{build_compat_lib}
-%files lib-compat
-%{_libdir}/libopenconnect.so.1*
-%endif
+%doc TODO COPYING.LGPL
 
 %files devel
 %defattr(-,root,root,-)
@@ -164,6 +102,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Jun 21 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.06-1
+- Update to 7.06 release
+
 * Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-3
 - When compiling with old gnutls version completely disable ECDHE instead
   of disabling the curves.
