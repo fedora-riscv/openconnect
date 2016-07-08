@@ -13,7 +13,7 @@
 
 Name:		openconnect
 Version:	7.06
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -33,6 +33,8 @@ Requires:	vpnc
 
 %if %{use_gnutls}
 BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
+%else
+BuildRequires:	pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
 %if %{use_libproxy}
 BuildRequires:	pkgconfig(libproxy-1.0)
@@ -102,6 +104,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jul 08 2016 David Woodhouse <dwmw2@infradead.org> - 7.06-2
+- BR libp11 and p11-kit to enable PKCS#11 support
+
 * Tue Jun 21 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.06-1
 - Update to 7.06 release
 
