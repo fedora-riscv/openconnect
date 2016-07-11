@@ -20,8 +20,8 @@
 %endif
 
 Name:		openconnect
-Version:	7.06
-Release:	7%{?relsuffix}%{?dist}
+Version:	7.07
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -33,14 +33,11 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.gpg
 
-Patch1:		openconnect-7.05-override-default-prio-string.patch
-Patch2:		openconnect-7.05-ensure-dtls-ciphers-match-the-allowed.patch
-Patch3:         fix-ipv6-only.patch
-
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0) gnupg2
+BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) gnupg2
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
 Requires:	vpnc-script
@@ -49,7 +46,9 @@ Requires:	vpnc
 %endif
 
 %if %{use_gnutls}
-BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
+BuildRequires:	pkgconfig(gnutls) trousers-devel
+%else
+BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
 %if %{use_libproxy}
 BuildRequires:	pkgconfig(libproxy-1.0)
@@ -83,12 +82,7 @@ gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0}
 
 %setup -q -n openconnect-%{version}%{?gitsuffix}
 
-%patch1 -p1 -b .prio
-%patch2 -p1 -b .ciphers
-%patch3 -p1 -b .ipv6
-
 %build
-autoreconf -fvi
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
 		--with-default-gnutls-priority="@SYSTEM" \
 %if !%{use_gnutls}
@@ -103,6 +97,9 @@ rm -rf $RPM_BUILD_ROOT
 %make_install
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
+
+%check
+make check
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -126,6 +123,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
+- Update to 7.07 release
+- Enable PKCS#11 and Yubikey OATH support for OpenSSL (i.e. EL6) build
+
 * Tue Mar 22 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-7
 - Switch to using GPGv2 for signature check
 
