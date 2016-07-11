@@ -123,7 +123,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Mon Jul 11 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.07-2
+* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-2
 - Add PGP keyring back to sources
 
 * Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
