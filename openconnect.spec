@@ -21,7 +21,7 @@
 
 Name:		openconnect
 Version:	7.07
-Release:	2%{?relsuffix}%{?dist}
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -123,9 +123,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-2
-- Add PGP keyring back to sources
-
 * Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
 - Update to 7.07 release
 - Enable PKCS#11 and Yubikey OATH support for OpenSSL (i.e. EL6) build
