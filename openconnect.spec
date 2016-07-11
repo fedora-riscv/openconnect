@@ -124,7 +124,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
-- Update to 7.07 release
+- Update to 7.07 release (#1268198)
 - Enable PKCS#11 and Yubikey OATH support for OpenSSL (i.e. EL6) build
 
 * Tue Mar 22 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-7
