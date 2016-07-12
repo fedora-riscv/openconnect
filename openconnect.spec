@@ -19,6 +19,8 @@
 %define use_tokens 1
 %endif
 
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 Name:		openconnect
 Version:	7.07
 Release:	1%{?relsuffix}%{?dist}
@@ -88,13 +90,14 @@ gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0}
 %if !%{use_gnutls}
 		--with-openssl --without-openssl-version-check \
 %endif
-		--htmldir=%{_docdir}/%{name}
+		--htmldir=%{_pkgdocdir}
 make %{?_smp_mflags} V=1
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %make_install
+mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
 
@@ -114,7 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
-%doc %{_docdir}/%{name}
+%doc %{_pkgdocdir}
 
 %files devel
 %defattr(-,root,root,-)
