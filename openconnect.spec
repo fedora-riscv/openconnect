@@ -1,3 +1,11 @@
+#% define gitcount 211
+#% define gitrev 584c84f
+
+%if 0%{?gitcount} > 0
+%define gitsuffix -%{gitcount}-g%{gitrev}
+%define relsuffix .git%{gitcount}_%{gitrev}
+%endif
+
 # RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
@@ -11,19 +19,28 @@
 %define use_tokens 1
 %endif
 
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
 Name:		openconnect
-Version:	7.06
+Version:	7.07
 Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{?version}.tar.gz
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
+%if 0%{?gitcount} == 0
+Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
+%endif
+Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
+Source3:	macros.gpg
+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
+BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
 Requires:	vpnc-script
@@ -32,15 +49,15 @@ Requires:	vpnc
 %endif
 
 %if %{use_gnutls}
-BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
+BuildRequires:	pkgconfig(gnutls) trousers-devel
 %else
-BuildRequires:	pkgconfig(libp11) pkgconfig(p11-kit-1)
+BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
 %if %{use_libproxy}
 BuildRequires:	pkgconfig(libproxy-1.0)
 %endif
 %if %{use_tokens}
-BuildRequires:  pkgconfig(stoken)
+BuildRequires:  pkgconfig(stoken) pkgconfig(libpskc)
 %endif
 
 %description
@@ -61,25 +78,33 @@ This package provides the core HTTP and authentication support from
 the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
+%include %SOURCE3
 %prep
-%setup -q -n openconnect-%{?version}
+%if 0%{?gitcount} == 0
+%gpg_verify
+%endif
+
+%setup -q -n openconnect-%{version}%{?gitsuffix}
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-%if %{use_gnutls}
-		--with-gnutls \
-%else
+		--with-default-gnutls-priority="@SYSTEM" \
+%if !%{use_gnutls}
 		--with-openssl --without-openssl-version-check \
 %endif
-		--htmldir=%{_docdir}/%{name}
+		--htmldir=%{_pkgdocdir}
 make %{?_smp_mflags} V=1
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 %make_install
+mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
+
+%check
+make check
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -93,9 +118,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
-#%{_docdir}/%{name}
-
 %doc TODO COPYING.LGPL
+%doc %{_pkgdocdir}
 
 %files devel
 %defattr(-,root,root,-)
@@ -104,27 +128,91 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Fri Jul 08 2016 David Woodhouse <dwmw2@infradead.org> - 7.06-2
-- BR libp11 and p11-kit to enable PKCS#11 support
+* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-2
+- Enable Kerberos and PSKC support
 
-* Tue Jun 21 2016 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.06-1
+* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
+- Update to 7.07 release (#1268198)
+- Enable PKCS#11 and Yubikey OATH support for OpenSSL (i.e. EL6) build
+
+* Tue Mar 22 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-7
+- Switch to using GPGv2 for signature check
+
+* Mon Mar 21 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.06-6
+- Check GPG signature as part of build
+
+* Tue Feb 02 2016 Dennis Gilmore <dennis@ausil.us> - 7.06-4
+- add upstream patch to fix ipv6 only setups
+
+* Thu Oct 29 2015 Peter Robinson <pbrobinson@fedoraproject.org> 7.06-3
+- Fix FTBFS by including packaged docs
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 7.06-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Tue Mar 17 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.06-1
 - Update to 7.06 release
 
-* Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-3
+* Wed Mar 11 2015 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.05-2
+- Utilize and enforce system-wide policies (#1179331)
+
+* Tue Mar 10 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.05-1
+- Update to 7.05 release
+
+* Sun Jan 25 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.04-1
+- Update to 7.04 release
+
+* Fri Jan 09 2015 David Woodhouse <David.Woodhouse@intel.com> - 7.03-1
+- Update to 7.03 release (#1179681)
+
+* Fri Dec 19 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.02-1
+- Update to 7.02 release (#1175951)
+
+* Sun Dec 07 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.01-1
+- Update to 7.01 release
+
+* Thu Nov 27 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.00-2
+- Add upstreamed version of Nikos' curve patch with version.c fixed
+
+* Thu Nov 27 2014 David Woodhouse <David.Woodhouse@intel.com> - 7.00-1
+- Update to 7.00 release
+
+* Tue Sep 16 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 6.00-2
 - When compiling with old gnutls version completely disable ECDHE instead
   of disabling the curves.
 
-* Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-2
-- Applied bug fixes from 5.99 release
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 6.00-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
-* Fri Aug 01 2014 Nikos Mavrogiannopoulos <nmav@redhat.com> - 5.03-1
-- Update to 5.03 release
+* Tue Jul 08 2014 David Woodhouse <David.Woodhouse@intel.com> - 6.00-1
+- Update to 6.00 release
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.99-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Wed Mar 05 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.99-1
+- Update to 5.99 release
+
+* Wed Jan 01 2014 David Woodhouse <David.Woodhouse@intel.com> - 5.02-1
+- Update to 5.02 release (#981911, #991653, #1031886)
+
+* Sat Aug 17 2013 Peter Robinson <pbrobinson@fedoraproject.org> 5.01-4
+- Fix install of docs
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 5.01-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Thu Jun 06 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-2
+- Build with stoken and OATH support.
 
 * Sat Jun 01 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.01-1
 - Update to 5.01 release (#955710, #964329, #964650)
 
-* Wed Feb 13 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.08-1
-- Update to 4.08 release (#910331 CVE-2012-6128)
+* Wed May 15 2013 David Woodhouse <David.Woodhouse@intel.com> - 5.00-1
+- Update to 5.00 release
+
+* Thu Feb 07 2013 David Woodhouse <David.Woodhouse@intel.com> - 4.99-1
+- Update to 4.99 release
 
 * Fri Aug 31 2012 David Woodhouse <David.Woodhouse@intel.com> - 4.07-2
 - Obsolete openconnect-lib-compat (#842840)
