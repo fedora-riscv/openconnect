@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.07
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -38,6 +38,7 @@ Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.gpg
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) gnupg2
+BuildRequires:	pkgconfig(libpskc) krb5-devel
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
 BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
 %if 0%{?fedora} || 0%{?rhel} >= 7
@@ -126,6 +127,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-2
+- Enable Kerberos and PSKC support
+
 * Mon Jul 11 2016 David Woodhouse <David.Woodhouse@intel.com> - 7.07-1
 - Update to 7.07 release (#1268198)
 - Enable PKCS#11 and Yubikey OATH support for OpenSSL (i.e. EL6) build
