@@ -33,7 +33,8 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %if 0%{?gitcount} == 0
 Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
 %endif
-Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.gpg
+Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
+Source3:	macros.gpg
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -78,9 +79,10 @@ This package provides the core HTTP and authentication support from
 the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
+%include %SOURCE3
 %prep
 %if 0%{?gitcount} == 0
-gpgv2 --keyring %{SOURCE2} %{SOURCE1} %{SOURCE0}
+%gpg_verify
 %endif
 
 %setup -q -n openconnect-%{version}%{?gitsuffix}
