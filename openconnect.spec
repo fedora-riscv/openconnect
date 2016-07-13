@@ -38,8 +38,7 @@ Source3:	macros.gpg
 
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) gnupg2
-BuildRequires:	pkgconfig(libpskc) krb5-devel
+BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
 BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
 %if 0%{?fedora} || 0%{?rhel} >= 7
@@ -58,7 +57,7 @@ BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 BuildRequires:	pkgconfig(libproxy-1.0)
 %endif
 %if %{use_tokens}
-BuildRequires:  pkgconfig(liboath) pkgconfig(stoken)
+BuildRequires:  pkgconfig(stoken) pkgconfig(libpskc)
 %endif
 
 %description
