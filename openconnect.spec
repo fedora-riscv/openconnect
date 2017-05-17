@@ -20,7 +20,7 @@
 %endif
 
 Name:		openconnect
-Version:	7.06
+Version:	7.08
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -29,7 +29,6 @@ License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{?version}%{?gitsuffix}.tar.gz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Patch0:		openconnect-7.05-dynamic-checks.patch
 
 BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
 BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
@@ -47,7 +46,7 @@ BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
 BuildRequires:	pkgconfig(libproxy-1.0)
 %endif
 %if %{use_tokens}
-BuildRequires:  pkgconfig(stoken)
+BuildRequires:	pkgconfig(stoken)
 %endif
 
 %description
@@ -70,7 +69,6 @@ for NetworkManager etc.
 
 %prep
 %setup -q -n openconnect-%{?version}%{?gitsuffix}
-%patch0 -p1 -b .dynamic-checks
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
@@ -112,6 +110,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed May 17 2017 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.08-1
+- Update to 7.08 release (#1451773)
+
 * Tue May 05 2015 Jan Grulich <jgrulich@redhat.com> - 7.06-1
 - Update to 7.06 release
 
