@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.08
-Release:	4%{?relsuffix}%{?dist}
+Release:	5%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -97,7 +97,6 @@ make %{?_smp_mflags} V=1
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %make_install
 mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
@@ -106,15 +105,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %check
 make check
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
 %{_mandir}/man8/*
@@ -122,12 +115,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc %{_pkgdocdir}
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so
-/usr/include/openconnect.h
+%{_includedir}/openconnect.h
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 31 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 7.08-5
+- Switch to %%ldconfig_scriptlets
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
