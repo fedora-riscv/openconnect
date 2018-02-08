@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.08
-Release:	5%{?relsuffix}%{?dist}
+Release:	6%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -120,6 +120,9 @@ make check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Wed Jan 31 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 7.08-5
 - Switch to %%ldconfig_scriptlets
 
