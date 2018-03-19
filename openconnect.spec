@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.08
-Release:	6%{?relsuffix}%{?dist}
+Release:	7%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -38,7 +38,7 @@ Source3:	macros.gpg
 
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
-BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
+BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
 BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
@@ -119,6 +119,9 @@ make check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Apr 4 2018 Iryna Shcherbina <ishcherb@redhat.com> - 7.08-7
+- Remove build dependency on Python
+
 * Thu Feb 08 2018 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
