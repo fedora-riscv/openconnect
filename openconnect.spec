@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.08
-Release:	7%{?relsuffix}%{?dist}
+Release:	8%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -119,6 +119,9 @@ make check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Wed Apr 4 2018 Iryna Shcherbina <ishcherb@redhat.com> - 7.08-7
 - Remove build dependency on Python
 
