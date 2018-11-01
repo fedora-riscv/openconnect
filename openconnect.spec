@@ -83,7 +83,7 @@ for NetworkManager etc.
 %gpg_verify
 %endif
 
-%setup -q -n openconnect-%{version}%{?gitsuffix}
+%autosetup -n openconnect-%{version}%{?gitsuffix}
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
