@@ -23,7 +23,7 @@
 
 Name:		openconnect
 Version:	7.08
-Release:	9%{?relsuffix}%{?dist}
+Release:	10%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -87,7 +87,7 @@ for NetworkManager etc.
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
-		--with-default-gnutls-priority="@OPENCONNECT,@SYSTEM" \
+		--with-default-gnutls-priority="@OPENCONNECT,SYSTEM" \
 %if !%{use_gnutls}
 		--with-openssl --without-openssl-version-check \
 %endif
@@ -119,6 +119,9 @@ make check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Nov 07 2018 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.08-9
+- Corrected typo in the @OPENCONNECT priority string
+
 * Mon Oct 22 2018 Michael Riss <Michael.Riss@gmail.com> - 7.08-9
 - Add @OPENCONNECT priority string to allow a custom cipher suite for openconnect
 
