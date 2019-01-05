@@ -1,5 +1,5 @@
-#% define gitcount 211
-#% define gitrev 584c84f
+# % define gitcount 227
+# % define gitrev a03e4bf
 
 %if 0%{?gitcount} > 0
 %define gitsuffix -%{gitcount}-g%{gitrev}
@@ -19,11 +19,18 @@
 %define use_tokens 1
 %endif
 
+# Fedora has tss2-sys from F29 onwards
+%if 0%{?fedora} >= 29
+%define use_tss2_esys 1
+%else
+%define use_tss2_esys 0
+%endif
+
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	7.08
-Release:	10%{?relsuffix}%{?dist}
+Version:	8.00
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -39,7 +46,7 @@ Source3:	macros.gpg
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
-BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm python2
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
 Requires:	vpnc-script
@@ -47,8 +54,13 @@ Requires:	vpnc-script
 Requires:	vpnc
 %endif
 
+%if 0%{?fedora} >= 30
+BuildRequires: glibc-langpack-cs
+%endif
 %if %{use_gnutls}
 BuildRequires:	pkgconfig(gnutls) trousers-devel
+# Anywhere we use GnuTLS ,there should be an ocserv package too
+BuildRequires:	ocserv
 %else
 BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
@@ -58,10 +70,15 @@ BuildRequires:	pkgconfig(libproxy-1.0)
 %if %{use_tokens}
 BuildRequires:  pkgconfig(stoken) pkgconfig(libpskc)
 %endif
+%if %{use_tss2_esys}
+# https://bugzilla.redhat.com/show_bug.cgi?id=1638961
+BuildRequires: pkgconfig(tss2-esys) libgcrypt-devel
+%endif
 
 %description
-This package provides a client for the Cisco AnyConnect VPN protocol, which
-is based on HTTPS and DTLS.
+This package provides a multiprotocol VPN client for Cisco AnyConnect,
+Juniper SSL VPN / Pulse Connect Secure, and Palo Alto Networks GlobalProtect
+SSL VPN.
 
 %package devel
 Summary: Development package for OpenConnect VPN authentication tools
@@ -87,8 +104,10 @@ for NetworkManager etc.
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
+		--disable-dsa-tests \
+%if %{use_gnutls}
 		--with-default-gnutls-priority="@OPENCONNECT,SYSTEM" \
-%if !%{use_gnutls}
+%else
 		--with-openssl --without-openssl-version-check \
 %endif
 		--htmldir=%{_pkgdocdir}
@@ -102,13 +121,14 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 %find_lang %{name}
 
 %check
-make check
+make VERBOSE=1 check
 
 %ldconfig_scriptlets
 
 %files -f %{name}.lang
 %{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
+%{_libexecdir}/openconnect/
 %{_mandir}/man8/*
 %doc TODO COPYING.LGPL
 %doc %{_pkgdocdir}
@@ -119,6 +139,9 @@ make check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Jan 05 2019 David Woodhouse <dwmw2@infradead.org> - 8.00-1
+- Update to 8.00 release
+
 * Wed Nov 07 2018 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.08-9
 - Corrected typo in the @OPENCONNECT priority string
 
