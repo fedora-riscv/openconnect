@@ -29,7 +29,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.00
+Version:	8.01
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -139,6 +139,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Jan 05 2019 David Woodhouse <dwmw2@infradead.org> - 8.01-1
+- Update to 8.01 release
+
 * Sat Jan 05 2019 David Woodhouse <dwmw2@infradead.org> - 8.00-1
 - Update to 8.00 release
 
