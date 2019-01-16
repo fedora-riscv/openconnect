@@ -29,7 +29,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.01
+Version:	8.02
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
@@ -118,6 +118,7 @@ make %{?_smp_mflags} V=1
 %make_install
 mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
+rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/tncc-wrapper.py
 %find_lang %{name}
 
 %check
@@ -139,6 +140,10 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 16 2019 David Woodhouse <dwmw2@infradead.org> - 8.02-1
+- Update to 8.02 release
+- Remove tncc-wrapper.py (#1664029)
+
 * Sat Jan 05 2019 David Woodhouse <dwmw2@infradead.org> - 8.01-1
 - Update to 8.01 release
 
