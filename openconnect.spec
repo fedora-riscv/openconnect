@@ -30,7 +30,7 @@
 
 Name:		openconnect
 Version:	8.02
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -140,6 +140,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jan 18 2019 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.02-2
+- Removed python2 dependency (#1664029)
+
 * Wed Jan 16 2019 David Woodhouse <dwmw2@infradead.org> - 8.02-1
 - Update to 8.02 release
 - Remove tncc-wrapper.py (#1664029)
