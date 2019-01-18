@@ -30,7 +30,7 @@
 
 Name:		openconnect
 Version:	8.02
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 Group:		Applications/Internet
@@ -46,7 +46,7 @@ Source3:	macros.gpg
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
-BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm python2
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
 Requires:	vpnc-script
@@ -140,6 +140,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jan 18 2019 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.02-2
+- Removed python2 dependency (#1664029)
+
 * Wed Jan 16 2019 David Woodhouse <dwmw2@infradead.org> - 8.02-1
 - Update to 8.02 release
 - Remove tncc-wrapper.py (#1664029)
