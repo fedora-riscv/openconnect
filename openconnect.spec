@@ -46,7 +46,7 @@ Source3:	macros.gpg
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
-BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm python2
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
 Requires:	vpnc-script
