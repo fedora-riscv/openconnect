@@ -30,7 +30,7 @@
 
 Name:		openconnect
 Version:	8.02
-Release:	2%{?relsuffix}%{?dist}
+Release:	3%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN
 
 License:	LGPLv2+
@@ -138,6 +138,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Fri Jan 18 2019 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.02-2
 - Removed python2 dependency (#1664029)
 
