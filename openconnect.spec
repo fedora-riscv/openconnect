@@ -29,9 +29,9 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.02
-Release:	3%{?relsuffix}%{?dist}
-Summary:	Open client for Cisco AnyConnect VPN
+Version:	8.03
+Release:	1%{?relsuffix}%{?dist}
+Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
@@ -138,6 +138,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat May 18 2019 David Woodhouse <dwmw2@infradead.org> - 8.03-1
+- Update to 8.03 release
+
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
