@@ -9,7 +9,7 @@
 # RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
-# RHEL5 has no libproxy, and no %make_install macro
+# RHEL5 has no libproxy, and no %%make_install macro
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %define use_libproxy 0
 %define make_install %{__make} install DESTDIR=%{?buildroot}
@@ -30,7 +30,7 @@
 
 Name:		openconnect
 Version:	8.04
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -139,6 +139,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Aug 10 2019 Kevin Fenzi <kevin@scrye.com> - 8.04-2
+- Remove hipreport-android.sh from sources
+
 * Fri Aug 09 2019 David Woodhouse <dwmw2@infradead.org> - 8.04-1
 - Update to 8.04 release
 
