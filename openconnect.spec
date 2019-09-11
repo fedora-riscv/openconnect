@@ -9,7 +9,7 @@
 # RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
-# RHEL5 has no libproxy, and no %make_install macro
+# RHEL5 has no libproxy, and no %%make_install macro
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %define use_libproxy 0
 %define make_install %{__make} install DESTDIR=%{?buildroot}
@@ -29,11 +29,10 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.02
-Release:	2%{?relsuffix}%{?dist}
-Summary:	Open client for Cisco AnyConnect VPN
+Version:	8.05
+Release:	1%{?relsuffix}%{?dist}
+Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
-Group:		Applications/Internet
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
 Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
@@ -82,7 +81,6 @@ SSL VPN.
 
 %package devel
 Summary: Development package for OpenConnect VPN authentication tools
-Group: Applications/Internet
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
 %if 0%{?rhel} && 0%{?rhel} <= 5
@@ -119,6 +117,7 @@ make %{?_smp_mflags} V=1
 mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
 rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/tncc-wrapper.py
+rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 %find_lang %{name}
 
 %check
@@ -140,6 +139,24 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Sep 12 2019 David Woodhouse <dwmw2@infradead.org> - 8.05-1
+- Update to 8.05 release (CVE-2019-16239)
+
+* Sat Aug 10 2019 Kevin Fenzi <kevin@scrye.com> - 8.04-2
+- Remove hipreport-android.sh from sources
+
+* Fri Aug 09 2019 David Woodhouse <dwmw2@infradead.org> - 8.04-1
+- Update to 8.04 release
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Sat May 18 2019 David Woodhouse <dwmw2@infradead.org> - 8.03-1
+- Update to 8.03 release
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Fri Jan 18 2019 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.02-2
 - Removed python2 dependency (#1664029)
 
