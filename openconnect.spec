@@ -29,8 +29,8 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.04
-Release:	2%{?relsuffix}%{?dist}
+Version:	8.05
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -139,6 +139,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu Sep 12 2019 David Woodhouse <dwmw2@infradead.org> - 8.05-1
+- Update to 8.05 release (CVE-2019-16239)
+
 * Sat Aug 10 2019 Kevin Fenzi <kevin@scrye.com> - 8.04-2
 - Remove hipreport-android.sh from sources
 
