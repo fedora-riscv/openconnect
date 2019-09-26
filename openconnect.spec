@@ -19,6 +19,16 @@
 %define use_tokens 1
 %endif
 
+# RHEL8 does not have libpskc, softhsm, ocserv yet
+%if 0%{?rhel} && 0%{?rhel} == 8
+%define use_tokens 0
+%define use_ocserv 0
+%define use_softhsm 0
+%else
+%define use_ocserv 1
+%define use_softhsm 1
+%endif
+
 # Fedora has tss2-sys from F29 onwards
 %if 0%{?fedora} >= 29
 %define use_tss2_esys 1
@@ -45,7 +55,10 @@ Source3:	macros.gpg
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
-BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper) softhsm
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
+%if %{use_softhsm}
+BuildRequires:	softhsm
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 7
 Obsoletes:	openconnect-lib-compat < %{version}-%{release}
 Requires:	vpnc-script
@@ -59,7 +72,9 @@ BuildRequires: glibc-langpack-cs
 %if %{use_gnutls}
 BuildRequires:	pkgconfig(gnutls) trousers-devel
 # Anywhere we use GnuTLS ,there should be an ocserv package too
+%if %{use_ocserv}
 BuildRequires:	ocserv
+%endif
 %else
 BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
