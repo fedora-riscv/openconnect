@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	8.05
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -154,6 +154,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Thu Sep 12 2019 David Woodhouse <dwmw2@infradead.org> - 8.05-1
 - Update to 8.05 release (CVE-2019-16239)
 
