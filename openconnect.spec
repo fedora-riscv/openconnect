@@ -39,8 +39,8 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.05
-Release:	2%{?relsuffix}%{?dist}
+Version:	8.06
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -154,6 +154,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Tue Mar 31 2020 David Woodhouse <dwmw2@infradead.org> - 8.06-1
+- Update to 8.06 release (Blacklist bad GnuTLS versions for insecure DTLS)
+
 * Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
