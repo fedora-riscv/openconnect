@@ -39,7 +39,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.06
+Version:	8.07
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
@@ -120,6 +120,7 @@ for NetworkManager etc.
 		--disable-dsa-tests \
 %if %{use_gnutls}
 		--with-default-gnutls-priority="@OPENCONNECT,SYSTEM" \
+		--without-gnutls-version-check \
 %else
 		--with-openssl --without-openssl-version-check \
 %endif
@@ -154,6 +155,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sat Apr 4 2020 David Woodhouse <dwmw2@infradead.org> - 8.07-1
+- Update to 8.07 release (runtime check for GnuTLS)
+
 * Tue Mar 31 2020 David Woodhouse <dwmw2@infradead.org> - 8.06-1
 - Update to 8.06 release (Blacklist bad GnuTLS versions for insecure DTLS)
 
