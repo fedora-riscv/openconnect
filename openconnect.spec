@@ -39,7 +39,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.07
+Version:	8.08
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
@@ -155,6 +155,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Apr 6 2020 David Woodhouse <dwmw2@infradead.org> - 8.08-1
+- Update to 8.08 release (CSD stderr handling, cert checking)
+
 * Sat Apr 4 2020 David Woodhouse <dwmw2@infradead.org> - 8.07-1
 - Update to 8.07 release (runtime check for GnuTLS)
 
