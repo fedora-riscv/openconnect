@@ -29,8 +29,8 @@
 %define use_softhsm 1
 %endif
 
-# Fedora has tss2-sys from F29 onwards
-%if 0%{?fedora} >= 29
+# Fedora has tss2-sys from F29 onwards, and RHEL from 8 onwards
+%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
 %define use_tss2_esys 1
 %else
 %define use_tss2_esys 0
@@ -39,7 +39,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.08
+Version:	8.09
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
@@ -146,6 +146,7 @@ make VERBOSE=1 check
 %{_sbindir}/openconnect
 %{_libexecdir}/openconnect/
 %{_mandir}/man8/*
+%{_sysconfdir}/bash_completion.d
 %doc TODO COPYING.LGPL
 %doc %{_pkgdocdir}
 
@@ -155,6 +156,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Wed Apr 29 2020 David Woodhouse <dwmw2@infradead.org> - 8.09-1
+- Update to 8.09 release
+
 * Mon Apr 6 2020 David Woodhouse <dwmw2@infradead.org> - 8.08-1
 - Update to 8.08 release (CSD stderr handling, cert checking)
 
