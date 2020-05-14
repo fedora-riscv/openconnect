@@ -39,8 +39,8 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.09
-Release:	2%{?relsuffix}%{?dist}
+Version:	8.10
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -51,7 +51,6 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 Source3:	macros.gpg
-Patch1:         0001-Fix-path-to-openconnect-in-bash-completion.patch
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
@@ -146,7 +145,7 @@ make VERBOSE=1 check
 %{_sbindir}/openconnect
 %{_libexecdir}/openconnect/
 %{_mandir}/man8/*
-%{_sysconfdir}/bash_completion.d
+%{_datadir}/bash-completion/completions/openconnect
 %doc TODO COPYING.LGPL
 %doc %{_pkgdocdir}
 
@@ -156,6 +155,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Thu May 14 2020 David Woodhouse <dwmw2@infradead.orG> - 8.10-1
+- Update to 8.10 release (CVE-2020-12823)
+
 * Sat May 2 2020 David Woodhouse <dwmw2@infradead.org> - 8.09-2
 - Fix path to openconnect in bash completion script
 
