@@ -1,5 +1,5 @@
-#% define gitcount 211
-#% define gitrev 584c84f
+# % define gitcount 227
+# % define gitrev a03e4bf
 
 %if 0%{?gitcount} > 0
 %define gitsuffix -%{gitcount}-g%{gitrev}
@@ -9,7 +9,7 @@
 # RHEL6 still has ancient GnuTLS
 %define use_gnutls 0%{?fedora} || 0%{?rhel} >= 7
 
-# RHEL5 has no libproxy, and no %make_install macro
+# RHEL5 has no libproxy, and no %%make_install macro
 %if 0%{?rhel} && 0%{?rhel} <= 5
 %define use_libproxy 0
 %define make_install %{__make} install DESTDIR=%{?buildroot}
@@ -19,43 +19,82 @@
 %define use_tokens 1
 %endif
 
-Name:		openconnect
-Version:	7.08
-Release:	1%{?relsuffix}%{?dist}
-Summary:	Open client for Cisco AnyConnect VPN
+# RHEL8 does not have libpskc, softhsm, ocserv yet
+%if 0%{?rhel} && 0%{?rhel} == 8
+%define use_tokens 0
+%define use_ocserv 0
+%define use_softhsm 0
+%else
+%define use_ocserv 1
+%define use_softhsm 1
+%endif
 
-Group:		Applications/Internet
+# Fedora has tss2-sys from F29 onwards, and RHEL from 8 onwards
+%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
+%define use_tss2_esys 1
+%else
+%define use_tss2_esys 0
+%endif
+
+%{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
+
+Name:		openconnect
+Version:	8.10
+Release:	1%{?relsuffix}%{?dist}
+Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
+
 License:	LGPLv2+
 URL:		http://www.infradead.org/openconnect.html
-Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{?version}%{?gitsuffix}.tar.gz
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz
+%if 0%{?gitcount} == 0
+Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
+%endif
+Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
+Source3:	macros.gpg
 
-BuildRequires:	pkgconfig(openssl) pkgconfig(libxml-2.0)
-BuildRequires:	autoconf automake libtool python gettext pkgconfig(liblz4)
+BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
+BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
+BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
+%if %{use_softhsm}
+BuildRequires:	softhsm
+%endif
 %if 0%{?fedora} || 0%{?rhel} >= 7
-Obsoletes:	openconnect-lib-compat%{?_isa} < %{version}-%{release}
+Obsoletes:	openconnect-lib-compat < %{version}-%{release}
 Requires:	vpnc-script
 %else
 Requires:	vpnc
 %endif
 
+%if 0%{?fedora} >= 30
+BuildRequires: glibc-langpack-cs
+%endif
 %if %{use_gnutls}
-BuildRequires:	pkgconfig(gnutls) trousers-devel pkgconfig(libpcsclite)
+BuildRequires:	pkgconfig(gnutls) trousers-devel
+# Anywhere we use GnuTLS ,there should be an ocserv package too
+%if %{use_ocserv}
+BuildRequires:	ocserv
+%endif
+%else
+BuildRequires:	pkgconfig(openssl) pkgconfig(libp11) pkgconfig(p11-kit-1)
 %endif
 %if %{use_libproxy}
 BuildRequires:	pkgconfig(libproxy-1.0)
 %endif
 %if %{use_tokens}
-BuildRequires:	pkgconfig(stoken)
+BuildRequires:  pkgconfig(stoken) pkgconfig(libpskc)
+%endif
+%if %{use_tss2_esys}
+# https://bugzilla.redhat.com/show_bug.cgi?id=1638961
+BuildRequires: pkgconfig(tss2-esys) libgcrypt-devel
 %endif
 
 %description
-This package provides a client for the Cisco AnyConnect VPN protocol, which
-is based on HTTPS and DTLS.
+This package provides a multiprotocol VPN client for Cisco AnyConnect,
+Juniper SSL VPN / Pulse Connect Secure, and Palo Alto Networks GlobalProtect
+SSL VPN.
 
 %package devel
 Summary: Development package for OpenConnect VPN authentication tools
-Group: Applications/Internet
 Requires: %{name}%{?_isa} = %{version}-%{release}
 # RHEL5 needs these spelled out because it doesn't automatically infer from pkgconfig
 %if 0%{?rhel} && 0%{?rhel} <= 5
@@ -67,49 +106,57 @@ This package provides the core HTTP and authentication support from
 the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
+%include %SOURCE3
 %prep
-%setup -q -n openconnect-%{?version}%{?gitsuffix}
+%if 0%{?gitcount} == 0
+%gpg_verify
+%endif
+
+%autosetup -n openconnect-%{version}%{?gitsuffix} -p1
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
+		--disable-dsa-tests \
 %if %{use_gnutls}
-		--with-gnutls \
+		--without-gnutls-version-check \
 %else
 		--with-openssl --without-openssl-version-check \
 %endif
-		--htmldir=%{_docdir}/%{name}
+		--htmldir=%{_pkgdocdir}
 make %{?_smp_mflags} V=1
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 %make_install
+mkdir -p $RPM_BUILD_ROOT/%{_pkgdocdir}
 rm -f $RPM_BUILD_ROOT/%{_libdir}/libopenconnect.la
+rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/tncc-wrapper.py
+rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 %find_lang %{name}
 
-%clean
-rm -rf $RPM_BUILD_ROOT
+%check
+make VERBOSE=1 check XFAIL_TESTS="auth-nonascii"
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files -f %{name}.lang
-%defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so.5*
 %{_sbindir}/openconnect
+%{_libexecdir}/openconnect/
 %{_mandir}/man8/*
-%{_docdir}/%{name}
-
+%{_datadir}/bash-completion/completions/openconnect
 %doc TODO COPYING.LGPL
+%doc %{_pkgdocdir}
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/libopenconnect.so
-/usr/include/openconnect.h
+%{_includedir}/openconnect.h
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri May 22 2020 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.10-1
+- Update to 8.10 release (CVE-2020-12823)
+
 * Wed May 17 2017 Nikos Mavrogiannopoulos <nmav@redhat.com> - 7.08-1
 - Update to 7.08 release (#1451773)
 
