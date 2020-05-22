@@ -29,8 +29,8 @@
 %define use_softhsm 1
 %endif
 
-# Fedora has tss2-sys from F29 onwards
-%if 0%{?fedora} >= 29
+# Fedora has tss2-sys from F29 onwards, and RHEL from 8 onwards
+%if 0%{?fedora} >= 29 || 0%{?rhel} >= 8
 %define use_tss2_esys 1
 %else
 %define use_tss2_esys 0
@@ -39,7 +39,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.05
+Version:	8.10
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
@@ -51,7 +51,6 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 Source3:	macros.gpg
-
 
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
@@ -113,13 +112,14 @@ for NetworkManager etc.
 %gpg_verify
 %endif
 
-%autosetup -n openconnect-%{version}%{?gitsuffix}
+%autosetup -n openconnect-%{version}%{?gitsuffix} -p1
 
 %build
 %configure	--with-vpnc-script=/etc/vpnc/vpnc-script \
 		--disable-dsa-tests \
 %if %{use_gnutls}
 		--with-default-gnutls-priority="@OPENCONNECT,SYSTEM" \
+		--without-gnutls-version-check \
 %else
 		--with-openssl --without-openssl-version-check \
 %endif
@@ -145,6 +145,7 @@ make VERBOSE=1 check
 %{_sbindir}/openconnect
 %{_libexecdir}/openconnect/
 %{_mandir}/man8/*
+%{_datadir}/bash-completion/completions/openconnect
 %doc TODO COPYING.LGPL
 %doc %{_pkgdocdir}
 
@@ -154,6 +155,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri May 22 2020 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.10-1
+- Update to 8.10 release (CVE-2020-12823)
+
 * Thu Sep 12 2019 David Woodhouse <dwmw2@infradead.org> - 8.05-1
 - Update to 8.05 release (CVE-2019-16239)
 
