@@ -20,7 +20,7 @@
 %endif
 
 # RHEL8 does not have libpskc, softhsm, ocserv yet
-%if 0%{?rhel} && 0%{?rhel} >= 8
+%if 0%{?rhel} && 0%{?rhel} == 8
 %define use_tokens 0
 %define use_ocserv 0
 %define use_softhsm 0
@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	8.10
-Release:	7.1%{?relsuffix}%{?dist}
+Release:	8%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -69,7 +69,7 @@ Requires:	vpnc-script
 Requires:	vpnc
 %endif
 
-%if 0%{?fedora} >= 30
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9
 BuildRequires: glibc-langpack-cs
 %endif
 %if %{use_gnutls}
@@ -140,7 +140,7 @@ rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 %find_lang %{name}
 
 %check
-%if 0%{?fedora} || 0%{?fedora} >= 34
+%if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 # auth-pkcs11 fails in Fedora34 for unknown reasons
 make VERBOSE=1 check XFAIL_TESTS=auth-pkcs11
 %else
@@ -164,8 +164,8 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
-* Tue Feb 08 2022 Troy Dawson <tdawson@redhat.com> - 8.10-7.1
-- epel9 has the same dependencies as epel8
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org>
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
 * Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
