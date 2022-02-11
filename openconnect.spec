@@ -69,7 +69,7 @@ Requires:	vpnc-script
 Requires:	vpnc
 %endif
 
-%if 0%{?fedora} >= 30
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9
 BuildRequires: glibc-langpack-cs
 %endif
 %if %{use_gnutls}
@@ -140,7 +140,7 @@ rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 %find_lang %{name}
 
 %check
-%if 0%{?fedora} || 0%{?fedora} >= 34
+%if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
 # auth-pkcs11 fails in Fedora34 for unknown reasons
 make VERBOSE=1 check XFAIL_TESTS=auth-pkcs11
 %else
