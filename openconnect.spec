@@ -39,8 +39,8 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.10
-Release:	8%{?relsuffix}%{?dist}
+Version:	8.20
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -51,9 +51,6 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 Source3:	macros.gpg
-
-Patch0001:	0001-Ignore-errors-fetching-NC-landing-page-if-auth-was-s.patch
-Patch0002:	0002-Unconditionally-bypass-system-crypto-policy.patch
 
 BuildRequires: make
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
@@ -141,8 +138,8 @@ rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 
 %check
 %if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
-# auth-pkcs11 fails in Fedora34 for unknown reasons
-make VERBOSE=1 check XFAIL_TESTS=auth-pkcs11
+# 3DES and MD5 really are just gone.
+make VERBOSE=1 check XFAIL_TESTS=obsolete-server-crypto
 %else
 make VERBOSE=1 check
 %endif
@@ -164,6 +161,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Sun Feb 20 2022 David Woodhouse <dwmw2@infradead.org> - 8.20-1
+- Update to 8.20 release
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org>
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
