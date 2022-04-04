@@ -39,7 +39,7 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.10
+Version:	8.20
 Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
@@ -52,6 +52,7 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 Source3:	macros.gpg
 
+BuildRequires: make
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
 BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
@@ -65,7 +66,7 @@ Requires:	vpnc-script
 Requires:	vpnc
 %endif
 
-%if 0%{?fedora} >= 30
+%if 0%{?fedora} >= 30 || 0%{?rhel} >= 9
 BuildRequires: glibc-langpack-cs
 %endif
 %if %{use_gnutls}
@@ -136,7 +137,12 @@ rm -f $RPM_BUILD_ROOT/%{_libexecdir}/openconnect/hipreport-android.sh
 %find_lang %{name}
 
 %check
+%if 0%{?fedora} >= 34 || 0%{?rhel} >= 9
+# 3DES and MD5 really are just gone.
+make VERBOSE=1 check XFAIL_TESTS=obsolete-server-crypto
+%else
 make VERBOSE=1 check
+%endif
 
 %ldconfig_scriptlets
 
@@ -155,6 +161,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Apr 04 2022 Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com> - 8.20-1
+- Update to 8.20 release
+
 * Fri May 22 2020 Nikos Mavrogiannopoulos <nmav@redhat.com> - 8.10-1
 - Update to 8.10 release (CVE-2020-12823)
 
