@@ -39,8 +39,8 @@
 %{!?_pkgdocdir: %global _pkgdocdir %{_docdir}/%{name}-%{version}}
 
 Name:		openconnect
-Version:	8.20
-Release:	2%{?relsuffix}%{?dist}
+Version:	9.01
+Release:	1%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -51,8 +51,6 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 Source3:	macros.gpg
-
-Patch0001:	0001-Set-loglevel-as-soon-as-it-s-known.patch
 
 BuildRequires: make
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
@@ -163,6 +161,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Apr 29 2022 David Woodhouse <dwmw2@infradead.org> - 9.01-1
+- Update to 9.01 release
+
 * Tue Apr 19 2022 David Woodhouse <dwmw2@infradead.org> - 8.20-2
 - Merge upstream patch to fix loglevel (OC #401).
 
