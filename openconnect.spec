@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	9.01
-Release:	1%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -50,7 +50,6 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
-Source3:	macros.gpg
 
 BuildRequires: make
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
@@ -107,10 +106,9 @@ This package provides the core HTTP and authentication support from
 the OpenConnect VPN client, to be used by GUI authentication dialogs
 for NetworkManager etc.
 
-%include %SOURCE3
 %prep
 %if 0%{?gitcount} == 0
-%gpg_verify
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %endif
 
 %autosetup -n openconnect-%{version}%{?gitsuffix} -p1
@@ -161,6 +159,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Mon Jul  4 2022 Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com> - 9.01-2
+- Removed the gpg verification macros.
+
 * Fri Apr 29 2022 David Woodhouse <dwmw2@infradead.org> - 9.01-1
 - Update to 9.01 release
 
