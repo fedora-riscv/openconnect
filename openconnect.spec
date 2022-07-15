@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	9.01
-Release:	2%{?relsuffix}%{?dist}
+Release:	3%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -51,7 +51,7 @@ Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
 
-BuildRequires: make
+BuildRequires: make xdg-utils
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
 BuildRequires:	autoconf automake libtool gettext pkgconfig(liblz4)
 BuildRequires:	pkgconfig(uid_wrapper) pkgconfig(socket_wrapper)
@@ -159,6 +159,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jul 15 2022 Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com> - 9.01-3
+- Compile with support for browser / xdg-open
+
 * Mon Jul  4 2022 Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com> - 9.01-2
 - Removed the gpg verification macros.
 
