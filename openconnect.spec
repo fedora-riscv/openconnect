@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	9.01
-Release:	2%{?relsuffix}%{?dist}
+Release:	3%{?relsuffix}%{?dist}
 Summary:	Open client for Cisco AnyConnect VPN, Juniper Network Connect/Pulse, PAN GlobalProtect
 
 License:	LGPLv2+
@@ -159,6 +159,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 9.01-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
 * Fri Jul 15 2022 Nikos Mavrogiannopoulos <n.mavrogiannopoulos@gmail.com> - 9.01-2
 - Compile with support for browser / xdg-open
 
