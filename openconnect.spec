@@ -40,7 +40,7 @@
 
 Name:		openconnect
 Version:	9.12
-Release:	2%{?relsuffix}%{?dist}
+Release:	2%{?relsuffix}.rv64%{?dist}
 Summary:	Open multi-protocol SSL VPN client
 
 License:	LGPLv2+
@@ -50,6 +50,7 @@ Source0:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuf
 Source1:	ftp://ftp.infradead.org/pub/openconnect/openconnect-%{version}%{?gitsuffix}.tar.gz.asc
 %endif
 Source2:	gpgkey-BE07D9FD54809AB2C4B0FF5F63762CDA67E2F359.asc
+Patch0:		fix-define.patch
 
 BuildRequires: make xdg-utils
 BuildRequires:	pkgconfig(libxml-2.0) pkgconfig(libpcsclite) krb5-devel gnupg2
@@ -159,6 +160,9 @@ make VERBOSE=1 check
 %{_libdir}/pkgconfig/openconnect.pc
 
 %changelog
+* Fri Dec 22 2023 Jiasheng Zhao <JasenChao@gmail.com> - 9.12-2.rv64
+- Rebuild for f39-rv64
+
 * Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 9.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
